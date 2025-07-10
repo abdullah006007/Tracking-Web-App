@@ -1,0 +1,522 @@
+[
+  {
+    "province": "Eastern Cape",
+    "district": "Buffalo City Metropolitan Municipality",
+    "seat": "East London",
+    "covered_areas": ["Mdantsane", "Zwelitsha", "King William's Town", "Bhisho"],
+    "status": "active",
+    "flowchart": "https://example.com/buffalocity-flowchart.png",
+    "longitude": 27.8780,
+    "latitude": -33.0153
+  },
+  {
+    "province": "Eastern Cape",
+    "district": "Nelson Mandela Bay Metropolitan Municipality",
+    "seat": "Gqeberha (Port Elizabeth)",
+    "covered_areas": ["iBhayi", "Despatch", "Uitenhage"],
+    "status": "active",
+    "flowchart": "https://example.com/mandelabay-flowchart.png",
+    "longitude": 25.6022,
+    "latitude": -33.9608
+  },
+  {
+    "province": "Eastern Cape",
+    "district": "Amathole District Municipality",
+    "seat": "East London",
+    "covered_areas": ["Amahlathi", "Great Kei", "Mnquma", "Mbhashe", "Ngqushwa", "Ngcobo", "Nxuba", "Matatiele"],
+    "status": "active",
+    "flowchart": "https://example.com/amathole-flowchart.png",
+    "longitude": 27.8739,
+    "latitude": -32.9819
+  },
+  {
+    "province": "Eastern Cape",
+    "district": "Chris Hani District Municipality",
+    "seat": "Queenstown (Komani)",
+    "covered_areas": ["Emalahleni", "Engcobo", "Inkwanca", "Intsika Yethu", "Inxuba Yethemba", "Lukhanji", "Sakhisizwe", "Tsolwana"],
+    "status": "active",
+    "flowchart": "https://example.com/chrishani-flowchart.png",
+    "longitude": 26.8850,
+    "latitude": -31.9044
+  },
+  {
+    "province": "Eastern Cape",
+    "district": "Joe Gqabi District Municipality",
+    "seat": "Barkly East",
+    "covered_areas": ["Senqu", "Elundini", "Maletswai"],
+    "status": "active",
+    "flowchart": "https://example.com/joegqabi-flowchart.png",
+    "longitude": 27.3219,
+    "latitude": -30.4500
+  },
+  {
+    "province": "Eastern Cape",
+    "district": "O.R. Tambo District Municipality",
+    "seat": "Mthatha",
+    "covered_areas": ["King Sabata Dalindyebo", "Nyandeni", "Mhlontlo", "Port St Johns", "Ingquza Hill"],
+    "status": "active",
+    "flowchart": "https://example.com/ortambo-flowchart.png",
+    "longitude": 28.7845,
+    "latitude": -31.5908
+  },
+  {
+    "province": "Eastern Cape",
+    "district": "Sarah Baartman District Municipality",
+    "seat": "Gqeberha",
+    "covered_areas": ["Blue Crane Route", "Makana", "Ndlambe", "Kouga", "Kou-Kamma", "Dr Beyers Naudé"],
+    "status": "active",
+    "flowchart": "https://example.com/sarahbaartman-flowchart.png",
+    "longitude": 25.6022,
+    "latitude": -33.9608
+  },
+  {
+    "province": "Eastern Cape",
+    "district": "Alfred Nzo District Municipality",
+    "seat": "Mount Ayliff",
+    "covered_areas": ["Matatiele", "Mbizana", "Ntabankulu", "Umzimvubu"],
+    "status": "active",
+    "flowchart": "https://example.com/alfrednzo-flowchart.png",
+    "longitude": 29.3667,
+    "latitude": -30.8167
+  },
+  {
+    "province": "Free State",
+    "district": "Mangaung Metropolitan Municipality",
+    "seat": "Bloemfontein",
+    "covered_areas": ["Botshabelo", "Thaba ’Nchu"],
+    "status": "active",
+    "flowchart": "https://example.com/mangaung-flowchart.png",
+    "longitude": 26.2196,
+    "latitude": -29.1079
+  },
+  {
+    "province": "Free State",
+    "district": "Fezile Dabi District Municipality",
+    "seat": "Sasolburg",
+    "covered_areas": ["Ngwathe", "Metsimaholo", "Mafube", "Nala", "Mantsopa"],
+    "status": "active",
+    "flowchart": "https://example.com/feziledabi-flowchart.png",
+    "longitude": 26.7380,
+    "latitude": -26.7710
+  },
+  {
+    "province": "Free State",
+    "district": "Lejweleputswa District Municipality",
+    "seat": "Welkom",
+    "covered_areas": ["Nala", "Matjhabeng", "Tokologo", "Tswelopele", "Masilonyana", "Moqhaka"],
+    "status": "active",
+    "flowchart": "https://example.com/lejweleputswa-flowchart.png",
+    "longitude": 26.7344,
+    "latitude": -27.9796
+  },
+  {
+    "province": "Free State",
+    "district": "Thabo Mofutsanyana District Municipality",
+    "seat": "Phuthaditjhaba",
+    "covered_areas": ["Dihlabeng", "Maluti-a-Phofung", "Nketoana", "Letsemeng", "Tswelopele", "Phumelela"],
+    "status": "active",
+    "flowchart": "https://example.com/thabomofutsanyana-flowchart.png",
+    "longitude": 29.2167,
+    "latitude": -28.4167
+  },
+  {
+    "province": "Free State",
+    "district": "Xhariep District Municipality",
+    "seat": "Trompsburg",
+    "covered_areas": ["Mafube", "Moqhaka", "Letsemeng", "Nala", "Dihlabeng"],
+    "status": "active",
+    "flowchart": "https://example.com/xhariep-flowchart.png",
+    "longitude": 26.8278,
+    "latitude": -29.8250
+  },
+  {
+    "province": "Gauteng",
+    "district": "City of Johannesburg Metropolitan Municipality",
+    "seat": "Johannesburg",
+    "covered_areas": ["Sandton", "Soweto", "Midrand", "Roodepoort"],
+    "status": "active",
+    "flowchart": "https://example.com/johannesburg-flowchart.png",
+    "longitude": 28.0473,
+    "latitude": -26.2041
+  },
+  {
+    "province": "Gauteng",
+    "district": "City of Tshwane Metropolitan Municipality",
+    "seat": "Pretoria",
+    "covered_areas": ["Centurion", "Mamelodi", "Soshanguve"],
+    "status": "active",
+    "flowchart": "https://example.com/tshwane-flowchart.png",
+    "longitude": 28.1881,
+    "latitude": -25.7461
+  },
+  {
+    "province": "Gauteng",
+    "district": "Ekurhuleni Metropolitan Municipality",
+    "seat": "Germiston",
+    "covered_areas": ["Alberton", "Kempton Park", "Boksburg", "Benoni", "Germiston"],
+    "status": "active",
+    "flowchart": "https://example.com/ekurhuleni-flowchart.png",
+    "longitude": 28.2248,
+    "latitude": -26.2023
+  },
+  {
+    "province": "Gauteng",
+    "district": "Sedibeng District Municipality",
+    "seat": "Vereeniging",
+    "covered_areas": ["Emfuleni", "Midvaal", "Lesedi"],
+    "status": "active",
+    "flowchart": "https://example.com/sedibeng-flowchart.png",
+    "longitude": 27.9265,
+    "latitude": -26.6739
+  },
+  {
+    "province": "Gauteng",
+    "district": "West Rand District Municipality",
+    "seat": "Randfontein",
+    "covered_areas": ["Mogale City", "Merafong City", "Rand West City"],
+    "status": "active",
+    "flowchart": "https://example.com/westrand-flowchart.png",
+    "longitude": 27.7088,
+    "latitude": -26.1841
+  },
+  {
+    "province": "KwaZulu-Natal",
+    "district": "eThekwini Metropolitan Municipality",
+    "seat": "Durban",
+    "covered_areas": ["Pinetown", "Chatsworth", "Inanda", "uMhlanga"],
+    "status": "active",
+    "flowchart": "https://example.com/ethekwini-flowchart.png",
+    "longitude": 31.0218,
+    "latitude": -29.8587
+  },
+  {
+    "province": "KwaZulu-Natal",
+    "district": "Amajuba District Municipality",
+    "seat": "Newcastle",
+    "covered_areas": ["Dannhauser", "eMadlangeni", "Newcastle"],
+    "status": "active",
+    "flowchart": "https://example.com/amajuba-flowchart.png",
+    "longitude": 29.9318,
+    "latitude": -27.7579
+  },
+  {
+    "province": "KwaZulu-Natal",
+    "district": "Harry Gwala District Municipality",
+    "seat": "Ixopo",
+    "covered_areas": ["Dr Nkosazana Dlamini-Zuma", "Greater Kokstad", "Ubuhlebezwe", "Umzimkhulu"],
+    "status": "active",
+    "flowchart": "https://example.com/harrygwala-flowchart.png",
+    "longitude": 30.0833,
+    "latitude": -30.1667
+  },
+  {
+    "province": "KwaZulu-Natal",
+    "district": "iLembe District Municipality",
+    "seat": "KwaDukuza",
+    "covered_areas": ["KwaDukuza", "Mandeni", "Maphumulo", "Ndwedwe"],
+    "status": "active",
+    "flowchart": "https://example.com/ilembe-flowchart.png",
+    "longitude": 31.2833,
+    "latitude": -29.3333
+  },
+  {
+    "province": "KwaZulu-Natal",
+    "district": "King Cetshwayo District Municipality",
+    "seat": "Richards Bay",
+    "covered_areas": ["uMhlathuze", "Mthonjaneni", "Nkandla", "uMfolozi", "Ntambanana"],
+    "status": "active",
+    "flowchart": "https://example.com/kingcetshwayo-flowchart.png",
+    "longitude": 31.8833,
+    "latitude": -28.8000
+  },
+  {
+    "province": "KwaZulu-Natal",
+    "district": "Ugu District Municipality",
+    "seat": "Port Shepstone",
+    "covered_areas": ["Ray Nkonyeni", "uMdoni", "uMuziwabantu", "Umzumbe", "Vulamehlo"],
+    "status": "active",
+    "flowchart": "https://example.com/ugu-flowchart.png",
+    "longitude": 30.7417,
+    "latitude": -30.7417
+  },
+  {
+    "province": "KwaZulu-Natal",
+    "district": "uMgungundlovu District Municipality",
+    "seat": "Pietermaritzburg",
+    "covered_areas": ["Msunduzi", "Mkhambathini", "Richmond", "uMngeni", "uMshwathi", "Mpofana", "Impendle"],
+    "status": "active",
+    "flowchart": "https://example.com/umgungundlovu-flowchart.png",
+    "longitude": 30.3833,
+    "latitude": -29.6000
+  },
+  {
+    "province": "KwaZulu-Natal",
+    "district": "uMzinyathi District Municipality",
+    "seat": "Dundee",
+    "covered_areas": ["Endumeni", "Nquthu", "Msinga", "Umvoti"],
+    "status": "active",
+    "flowchart": "https://example.com/umzinyathi-flowchart.png",
+    "longitude": 30.2333,
+    "latitude": -28.1667
+  },
+  {
+    "province": "KwaZulu-Natal",
+    "district": "Zululand District Municipality",
+    "seat": "Ulundi",
+    "covered_areas": ["Abaqulusi", "eDumbe", "Nongoma", "Ulundi", "uPhongolo"],
+    "status": "active",
+    "flowchart": "https://example.com/zululand-flowchart.png",
+    "longitude": 31.4167,
+    "latitude": -27.8500
+  },
+  {
+    "province": "KwaZulu-Natal",
+    "district": "uMkhanyakude District Municipality",
+    "seat": "Mkuze",
+    "covered_areas": ["Big Five Hlabisa", "Jozini", "Mtubatuba", "uMhlabuyalingana"],
+    "status": "active",
+    "flowchart": "https://example.com/umkhanyakude-flowchart.png",
+    "longitude": 32.0333,
+    "latitude": -27.6167
+  },
+  {
+    "province": "KwaZulu-Natal",
+    "district": "uThukela District Municipality",
+    "seat": "Ladysmith",
+    "covered_areas": ["Alfred Duma", "Inkosi Langalibalele", "Okhahlamba"],
+    "status": "active",
+    "flowchart": "https://example.com/uthukela-flowchart.png",
+    "longitude": 29.7833,
+    "latitude": -28.5500
+  },
+  {
+    "province": "Limpopo",
+    "district": "Capricorn District Municipality",
+    "seat": "Polokwane",
+    "covered_areas": ["Aganang", "Blouberg", "Lepelle-Nkumpi", "Molemole", "Polokwane"],
+    "status": "active",
+    "flowchart": "https://example.com/capricorn-flowchart.png",
+    "longitude": 29.4667,
+    "latitude": -23.9000
+  },
+  {
+    "province": "Limpopo",
+    "district": "Mopani District Municipality",
+    "seat": "Giyani",
+    "covered_areas": ["Ba-Phalaborwa", "Greater Giyani", "Greater Letaba", "Greater Tzaneen", "Maruleng"],
+    "status": "active",
+    "flowchart": "https://example.com/mopani-flowchart.png",
+    "longitude": 30.7167,
+    "latitude": -23.3000
+  },
+  {
+    "province": "Limpopo",
+    "district": "Sekhukhune District Municipality",
+    "seat": "Groblersdal",
+    "covered_areas": ["Elias Motsoaledi", "Ephraim Mogale", "Fetakgomo Tubatse", "Makhuduthamaga"],
+    "status": "active",
+    "flowchart": "https://example.com/sekhukhune-flowchart.png",
+    "longitude": 29.8167,
+    "latitude": -24.8833
+  },
+  {
+    "province": "Limpopo",
+    "district": "Vhembe District Municipality",
+    "seat": "Thohoyandou",
+    "covered_areas": ["Collins Chabane", "Makhado", "Musina", "Thulamela"],
+    "status": "active",
+    "flowchart": "https://example.com/vhembe-flowchart.png",
+    "longitude": 30.4833,
+    "latitude": -22.9500
+  },
+  {
+    "province": "Limpopo",
+    "district": "Waterberg District Municipality",
+    "seat": "Modimolle",
+    "covered_areas": ["Bela-Bela", "Lephalale", "Mogalakwena", "Modimolle-Mookgophong", "Thabazimbi"],
+    "status": "active",
+    "flowchart": "https://example.com/waterberg-flowchart.png",
+    "longitude": 28.4000,
+    "latitude": -24.7000
+  },
+  {
+    "province": "Mpumalanga",
+    "district": "Ehlanzeni District Municipality",
+    "seat": "Nelspruit",
+    "covered_areas": ["Bushbuckridge", "City of Mbombela", "Nkomazi", "Thaba Chweu"],
+    "status": "active",
+    "flowchart": "https://example.com/ehlanzeni-flowchart.png",
+    "longitude": 30.9700,
+    "latitude": -25.4700
+  },
+  {
+    "province": "Mpumalanga",
+    "district": "Gert Sibande District Municipality",
+    "seat": "Ermelo",
+    "covered_areas": ["Albert Luthuli", "Dipaleseng", "Govan Mbeki", "Lekwa", "Mkhondo", "Msukaligwa", "Pixley ka Seme"],
+    "status": "active",
+    "flowchart": "https://example.com/gertsibande-flowchart.png",
+    "longitude": 29.9833,
+    "latitude": -26.5333
+  },
+  {
+    "province": "Mpumalanga",
+    "district": "Nkangala District Municipality",
+    "seat": "Middelburg",
+    "covered_areas": ["Dr JS Moroka", "Emalahleni", "Steve Tshwete", "Thembisile Hani", "Victor Khanye"],
+    "status": "active",
+    "flowchart": "https://example.com/nkangala-flowchart.png",
+    "longitude": 29.4500,
+    "latitude": -25.7667
+  },
+  {
+    "province": "North West",
+    "district": "Bojanala Platinum District Municipality",
+    "seat": "Rustenburg",
+    "covered_areas": ["Kgetlengrivier", "Madibeng", "Moretele", "Moses Kotane", "Rustenburg"],
+    "status": "active",
+    "flowchart": "https://example.com/bojanala-flowchart.png",
+    "longitude": 27.2500,
+    "latitude": -25.6667
+  },
+  {
+    "province": "North West",
+    "district": "Dr Kenneth Kaunda District Municipality",
+    "seat": "Klerksdorp",
+    "covered_areas": ["City of Matlosana", "JB Marks", "Maquassi Hills"],
+    "status": "active",
+    "flowchart": "https://example.com/kaunda-flowchart.png",
+    "longitude": 26.6667,
+    "latitude": -26.8667
+  },
+  {
+    "province": "North West",
+    "district": "Dr Ruth Segomotsi Mompati District Municipality",
+    "seat": "Vryburg",
+    "covered_areas": ["Greater Taung", "Kagisano-Molopo", "Lekwa-Teemane", "Mamusa", "Naledi"],
+    "status": "active",
+    "flowchart": "https://example.com/mompati-flowchart.png",
+    "longitude": 24.7333,
+    "latitude": -26.9667
+  },
+  {
+    "province": "North West",
+    "district": "Ngaka Modiri Molema District Municipality",
+    "seat": "Mahikeng",
+    "covered_areas": ["Ditsobotla", "Mahikeng", "Ratlou", "Ramotshere Moiloa", "Tswaing"],
+    "status": "active",
+    "flowchart": "https://example.com/ngakamodiri-flowchart.png",
+    "longitude": 25.6333,
+    "latitude": -25.8500
+  },
+  {
+    "province": "Northern Cape",
+    "district": "Frances Baard District Municipality",
+    "seat": "Kimberley",
+    "covered_areas": ["Dikgatlong", "Magareng", "Sol Plaatje", "Pixley ka Seme"],
+    "status": "active",
+    "flowchart": "https://example.com/francesbaard-flowchart.png",
+    "longitude": 24.7667,
+    "latitude": -28.7333
+  },
+  {
+    "province": "Northern Cape",
+    "district": "John Taolo Gaetsewe District Municipality",
+    "seat": "Kuruman",
+    "covered_areas": ["Ga-Segonyana", "Gamagara", "Joe Morolong"],
+    "status": "active",
+    "flowchart": "https://example.com/gaetsewe-flowchart.png",
+    "longitude": 23.4333,
+    "latitude": -27.4667
+  },
+  {
+    "province": "Northern Cape",
+    "district": "Namakwa District Municipality",
+    "seat": "Springbok",
+    "covered_areas": ["Hantam", "Kamiesberg", "Karoo Hoogland", "Khâi-Ma", "Nama Khoi", "Richtersveld"],
+    "status": "active",
+    "flowchart": "https://example.com/namakwa-flowchart.png",
+    "longitude": 17.8667,
+    "latitude": -29.6667
+  },
+  {
+    "province": "Northern Cape",
+    "district": "Pixley ka Seme District Municipality",
+    "seat": "De Aar",
+    "covered_areas": ["Emthanjeni", "Kareeberg", "Renosterberg", "Thembelihle", "Ubuntu", "Umsobomvu"],
+    "status": "active",
+    "flowchart": "https://example.com/pixleykaseme-flowchart.png",
+    "longitude": 24.0167,
+    "latitude": -30.6500
+  },
+  {
+    "province": "Northern Cape",
+    "district": "ZF Mgcawu District Municipality",
+    "seat": "Upington",
+    "covered_areas": ["Dawid Kruiper", "Kai !Garib", "!Kheis", "Tsantsabane", "Kgatelopele"],
+    "status": "active",
+    "flowchart": "https://example.com/zfmgcawu-flowchart.png",
+    "longitude": 21.2500,
+    "latitude": -28.4500
+  },
+  {
+    "province": "Western Cape",
+    "district": "City of Cape Town Metropolitan Municipality",
+    "seat": "Cape Town",
+    "covered_areas": ["Bellville", "Mitchells Plain", "Khayelitsha", "Somerset West"],
+    "status": "active",
+    "flowchart": "https://example.com/capetown-flowchart.png",
+    "longitude": 18.4241,
+    "latitude": -33.9249
+  },
+  {
+    "province": "Western Cape",
+    "district": "Cape Winelands District Municipality",
+    "seat": "Worcester",
+    "covered_areas": ["Breede Valley", "Drakenstein", "Langeberg", "Stellenbosch", "Witzenberg"],
+    "status": "active",
+    "flowchart": "https://example.com/capewinelands-flowchart.png",
+    "longitude": 19.4333,
+    "latitude": -33.6333
+  },
+  {
+    "province": "Western Cape",
+    "district": "Central Karoo District Municipality",
+    "seat": "Beaufort West",
+    "covered_areas": ["Beaufort West", "Laingsburg", "Prince Albert"],
+    "status": "active",
+    "flowchart": "https://example.com/centrakaroo-flowchart.png",
+    "longitude": 22.5833,
+    "latitude": -32.3500
+  },
+  {
+    "province": "Western Cape",
+    "district": "Garden Route District Municipality",
+    "seat": "George",
+    "covered_areas": ["Bitou", "George", "Hessequa", "Kannaland", "Knysna", "Mossel Bay", "Oudtshoorn"],
+    "status": "active",
+    "flowchart": "https://example.com/gardenroute-flowchart.png",
+    "longitude": 22.4500,
+    "latitude": -33.9667
+  },
+  {
+    "province": "Western Cape",
+    "district": "Overberg District Municipality",
+    "seat": "Bredasdorp",
+    "covered_areas": ["Cape Agulhas", "Overstrand", "Swellendam", "Theewaterskloof"],
+    "status": "active",
+    "flowchart": "https://example.com/overberg-flowchart.png",
+    "longitude": 20.0333,
+    "latitude": -34.5333
+  },
+  {
+    "province": "Western Cape",
+    "district": "West Coast District Municipality",
+    "seat": "Moorreesburg",
+    "covered_areas": ["Bergrivier", "Cederberg", "Matzikama", "Saldanha Bay", "Swartland"],
+    "status": "active",
+    "flowchart": "https://example.com/westcoast-flowchart.png",
+    "longitude": 18.6667,
+    "latitude": -33.1667
+  }
+]
