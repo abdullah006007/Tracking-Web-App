@@ -7,6 +7,9 @@ import Register from "../Pages/Authentication/Register/Register";
 import Coverage from "../Pages/Covarage/Coverage";
 import RrivateRooutes from "../Routes/RrivateRooutes";
 import Sendparcel from "../Pages/SendParcel/Sendparcel";
+import DashboardLayout from "../LayOut/DashboardLayout";
+import MyParcels from "../Pages/Dashborad/MyParcels/MyParcels";
+import Payment from "../Pages/Dashborad/Payment/Payment";
 
 
 
@@ -49,5 +52,27 @@ export const router = createBrowserRouter([
             Component: Register
         }
     ]
+  }
+
+  ,
+  {
+    path: '/dashboard',
+    element: <RrivateRooutes>
+        <DashboardLayout></DashboardLayout>
+    </RrivateRooutes>,
+    children:[
+        {
+
+            path: 'myParcels',
+            Component: MyParcels
+
+        }
+        ,
+        {
+            path: 'payment/:parcelId',
+            Component: Payment
+        }
+    ]
+
   }
 ]);

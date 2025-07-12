@@ -1,14 +1,41 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import Sociallogin from '../SocialLogin/Sociallogin';
+import useAuth from '../../../Hooks/useAuth';
+import Swal from 'sweetalert2';
 
 const LogIn = () => {
 
     const { register, handleSubmit, formState: { errors } } = useForm()
+    const { signIn } = useAuth()
+    
+    const location = useLocation()
+    const from = location.state?.from || '/'
+    const navigate = useNavigate();
+   
 
     const onSubmit = data => {
-        console.log(data);
+
+        signIn(data.email, data.password)
+            .then(result => {
+                if (result.user) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Log in successfully',
+                        text: 'Log in successfully!',
+                    });
+                    navigate(from);
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message,
+                });
+            });
+
     }
 
 
@@ -40,20 +67,20 @@ const LogIn = () => {
                         <button className="btn btn-primary text-black mt-4">Login</button>
 
                         <p><small>New to this website?<Link className='text-blue-400 underline' to="/register">
-                        Register</Link> </small></p>
+                            Register</Link> </small></p>
 
 
 
 
 
                     </fieldset>
-                    <Sociallogin></Sociallogin>
-                    
+                    <Sociallogin from={from}></Sociallogin>
+
                 </form>
 
             </div>
         </div>
     );
-}; 
+};
 
 export default LogIn;

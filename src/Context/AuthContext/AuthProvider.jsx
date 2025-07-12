@@ -1,79 +1,72 @@
 import React, { useEffect, useState } from 'react';
 import { AuthContext } from './AuthContext';
-import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
+import { 
+  createUserWithEmailAndPassword, 
+  GoogleAuthProvider, 
+  onAuthStateChanged, 
+  signInWithEmailAndPassword, 
+  signInWithPopup,
+  signOut 
+} from 'firebase/auth';
 import { auth } from '../../Firebase/firebase.init';
 
+const googleProvider = new GoogleAuthProvider();
 
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-const googleProvider = new GoogleAuthProvider () 
+  // Create user with email and password
+  const createUser = (email, password) => {
+    setLoading(true);
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
 
-const AuthProvider = ({children}) => {
+  // Sign in with email and password
+  const signIn = (email, password) => {
+    setLoading(true);
+    return signInWithEmailAndPassword(auth, email, password);
+  };
 
-    const [user, setUser] = useState(null)
-    const [loading, setLoading] = useState(true)
+  // Sign in with Google
+  const signinWithGoogle = () => {
+    setLoading(true);
+    return signInWithPopup(auth, googleProvider);
+  };
 
+  // Sign out
+  const logOut = () => {
+    setLoading(true);
+    return signOut(auth);
+  };
 
-    // password authentication in google (1)
+  // Listen to auth state changes
+  useEffect(() => {
+    const unSubscribe = onAuthStateChanged(auth, currentUser => {
+      setUser(currentUser);
+      console.log('User in auth change:', currentUser);
+      setLoading(false);
+    });
 
-    const createUser = (email, password)=>{
-        setLoading(true)
-        return createUserWithEmailAndPassword(auth, email, password )
+    return () => {
+      unSubscribe();
+    };
+  }, []);
 
-    }
+  const authInfo = {
+    createUser,
+    signIn,
+    signinWithGoogle,
+    logOut,
+    user,
+    loading,
+  };
 
-    // password authentication in google (2)
-    const signIn = (email, password) =>{
-        setLoading(true) 
-        return signInWithEmailAndPassword(auth, email, password)
-    }
-
-
-    // creating google button
-    const signinWithGoogle = ()=>{
-        setLoading(true)
-        return signInWithPopup(auth, googleProvider)
-    }
-
-
-    // Signout (4) in password authentication
-    const logOut = ()=>{
-        setLoading(true)
-        return signOut(auth)
-    }
-
-
-    // manage user in google (3)
-    useEffect(()=>{
-        const unSubscribe = onAuthStateChanged(auth, currentUser=>{
-            setUser(currentUser)
-            console.log('user in auth change ', currentUser);
-            setLoading(false)
-        })
-
-        return ()=>{
-            unSubscribe()
-        }
-        
-    },[])
-
-
-
-    const authInfo ={
-        createUser,
-        signIn,
-        user,
-        loading,
-        logOut,
-        signinWithGoogle
-
-    }
-
-
-    return (
-        <AuthContext value={authInfo}>
-            {children}        
-        </AuthContext>
-    );
+  return (
+    <AuthContext.Provider value={authInfo}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;
