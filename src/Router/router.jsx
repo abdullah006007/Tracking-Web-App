@@ -10,6 +10,12 @@ import Sendparcel from "../Pages/SendParcel/Sendparcel";
 import DashboardLayout from "../LayOut/DashboardLayout";
 import MyParcels from "../Pages/Dashborad/MyParcels/MyParcels";
 import Payment from "../Pages/Dashborad/Payment/Payment";
+import PaymentHistory from "../Pages/Dashborad/PaymentHistory/PaymentHistory";
+import TrackParcel from "../Pages/Dashborad/TrackParcel/TrackParcel";
+import BeComeRider from "../Pages/Dashborad/BecomeRider/BeComeRider";
+import PendingRiders from "../Pages/Dashborad/PendingRiders/PendingRiders";
+import ActiveRiders from "../Pages/Dashborad/ActiveRiders/ActiveRiders";
+import UpdateProfile from "../Pages/Dashborad/UpdateProfile/UpdateProfile";
 
 
 
@@ -27,6 +33,13 @@ export const router = createBrowserRouter([
             Component: Coverage,
             loader: ()=> fetch('./warehouses.json')
         },
+        {
+            path:'beComeRider',
+            element: <RrivateRooutes>
+                <BeComeRider></BeComeRider>
+            </RrivateRooutes>
+        }
+        ,
         {
             path: 'sendParcel',
             element: <RrivateRooutes>
@@ -71,6 +84,28 @@ export const router = createBrowserRouter([
         {
             path: 'payment/:parcelId',
             Component: Payment
+        },
+        {
+            path: 'paymentHistory',
+            Component: PaymentHistory 
+        },
+        {
+            path: 'track',
+            Component: TrackParcel
+        },
+        {
+            path: 'pendingRiders',
+            Component:PendingRiders
+        },
+        {
+            path: 'activeRiders',
+            Component: ActiveRiders
+        }
+        ,
+        {
+            path: 'update-profile',
+            Component: UpdateProfile
+
         }
     ]
 

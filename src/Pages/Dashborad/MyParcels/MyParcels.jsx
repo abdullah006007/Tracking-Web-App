@@ -1,25 +1,50 @@
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Swal from 'sweetalert2';
 import useAuth from '../../../Hooks/useAuth';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router-dom';
+import Spinner from '../../../Shared/Spinner';
 
 const MyParcels = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const { data: parcels = [], refetch, isLoading } = useQuery({
+  const { data: parcels = [], refetch, isLoading, isRefetching } = useQuery({
     queryKey: ['my-parcels', user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/parcels?email=${user?.email}`);
+      const res = await axiosSecure.get(`/parcels?email=${user?.email}`, 
+      
+        
+        
+       );
       return res.data;
     },
-    enabled: !!user?.email
+    enabled: !!user?.email,
+    refetchOnWindowFocus: true, // Add this to refetch when window regains focus
   });
 
-  const handleDelete = (id) => {
+  // Check for payment success in URL params
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const paymentSuccess = queryParams.get('payment_success');
+    
+    if (paymentSuccess === 'true') {
+      Swal.fire({
+        title: 'Payment Successful!',
+        text: 'Your payment has been processed successfully.',
+        icon: 'success'
+      }).then(() => {
+        // Remove the query param and refetch data
+        navigate(location.pathname, { replace: true });
+        refetch();
+      });
+    }
+  }, [location, navigate, refetch]);
+
+  const handleDelete = async (id) => {
     Swal.fire({
       title: 'Are you sure?',
       text: "This will permanently delete the parcel!",
@@ -32,12 +57,12 @@ const MyParcels = () => {
       if (result.isConfirmed) {
         try {
           await axiosSecure.delete(`/parcels/${id}`);
+          await refetch();
           Swal.fire(
             'Deleted!',
             'Your parcel has been deleted.',
             'success'
           );
-          refetch();
         } catch (error) {
           Swal.fire(
             'Error!',
@@ -72,8 +97,8 @@ const MyParcels = () => {
     }
   };
 
-  if (isLoading) {
-    return <div className="text-center py-8">Loading your parcels...</div>;
+  if (isLoading || isRefetching) {
+    return <Spinner></Spinner>
   }
 
   if (!parcels.length) {
@@ -86,11 +111,11 @@ const MyParcels = () => {
   }
 
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-4">📦 My Parcels</h2>
-      <div className="overflow-x-auto">
-        <table className="table table-zebra w-full text-sm">
-          <thead className="bg-base-200 text-base-content">
+    <div className="p-4">
+      <h2 className="text-2xl font-semibold mb-6">📦 My Parcels</h2>
+      <div className="overflow-x-auto bg-white rounded-lg shadow">
+        <table className="table w-full">
+          <thead className="bg-gray-100">
             <tr>
               <th>#</th>
               <th>Type</th>
@@ -99,51 +124,60 @@ const MyParcels = () => {
               <th>Created At</th>
               <th>Tracking ID</th>
               <th>Status</th>
+              <th>Payment</th>
               <th className="text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
             {parcels.map((parcel, index) => (
-              <tr key={parcel._id}>
+              <tr key={parcel._id} className="hover:bg-gray-50">
                 <td>{index + 1}</td>
                 <td>
-                  {parcel.type === 'document' ? 'Document' : 'Non-document'}
-                  {parcel.type === 'non-document' && parcel.weight && (
-                    <span className="text-xs block">({parcel.weight} kg)</span>
-                  )}
+                  <div className="flex flex-col">
+                    <span>{parcel.type === 'document' ? 'Document' : 'Non-document'}</span>
+                    {parcel.type === 'non-document' && parcel.weight && (
+                      <span className="text-xs text-gray-500">{parcel.weight} kg</span>
+                    )}
+                  </div>
                 </td>
                 <td>{parcel.title}</td>
                 <td>${parcel.cost?.toFixed(2) || '0.00'}</td>
-                <td>{new Date(parcel.creationDate).toLocaleString()}</td>
+                <td>{new Date(parcel.creationDate).toLocaleDateString()}</td>
                 <td className="font-mono text-xs">{parcel.trackingNumber}</td>
                 <td>
                   <span className={`badge ${getStatusBadge(parcel.status)}`}>
                     {parcel.status || 'Pending'}
                   </span>
                 </td>
-                <td className="flex gap-2 justify-center">
-                  <button 
-                    onClick={() => handleView(parcel._id)}
-                    className="btn btn-sm btn-outline btn-primary"
-                  >
-                    View
-                  </button>
-                  {parcel.status !== 'Paid' && (
+                <td>
+                  <span className={`badge ${parcel.paymentStatus === 'Paid' ? 'badge-success' : 'badge-warning'}`}>
+                    {parcel.paymentStatus || 'Unpaid'}
+                  </span>
+                </td>
+                <td>
+                  <div className="flex gap-2 justify-center">
                     <button 
-                      onClick={() => handlePay(parcel._id)} 
-                      className="btn btn-sm btn-outline btn-success"
-                      disabled={parcel.status === 'Paid'}
+                      onClick={() => handleView(parcel._id)}
+                      className="btn btn-xs btn-outline btn-primary"
                     >
-                      {parcel.status === 'Paid' ? 'Paid' : 'Pay'}
+                      View
                     </button>
-                  )}
-                  <button
-                    onClick={() => handleDelete(parcel._id)}
-                    className="btn btn-sm btn-outline btn-error"
-                    disabled={parcel.status === 'Delivered'}
-                  >
-                    Delete
-                  </button>
+                    {parcel.paymentStatus !== 'Paid' && (
+                      <button 
+                        onClick={() => handlePay(parcel._id)} 
+                        className="btn btn-xs btn-outline btn-success"
+                      >
+                        Pay
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleDelete(parcel._id)}
+                      className="btn btn-xs btn-outline btn-error"
+                      disabled={parcel.status === 'Delivered' || parcel.paymentStatus === 'Paid'}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

@@ -1,24 +1,19 @@
 import React from 'react';
 import { Link, NavLink, Outlet } from 'react-router';
 import Profastlogo from '../Shared/ProfastLogo/Profastlogo';
+import { FaBoxOpen, FaMoneyCheckAlt, FaUserEdit, FaSearchLocation, FaMotorcycle, FaUserClock } from 'react-icons/fa';
+import { AiFillHome } from 'react-icons/ai';
 
 const DashboardLayout = () => {
     return (
-        <div>
+        <div className="min-h-screen">
             <div className="drawer lg:drawer-open">
                 <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-                <div className="drawer-content flex flex-col ">
-
-
-
-
-
-
-
-                    {/* Navbar */}
+                <div className="drawer-content flex flex-col">
+                    {/* Mobile Navbar */}
                     <div className="navbar bg-base-300 w-full lg:hidden">
-                        <div className="flex-none ">
-                            <label htmlFor="my-drawer-2 " aria-label="open sidebar" className="btn btn-square btn-ghost">
+                        <div className="flex-none">
+                            <label htmlFor="my-drawer-2" aria-label="open sidebar" className="btn btn-square btn-ghost">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -34,34 +29,105 @@ const DashboardLayout = () => {
                                 </svg>
                             </label>
                         </div>
-                        <div className="mx-2 flex-1 px-2 lg:hidden"> Dashboard </div>
-                        
+                        <div className="flex-1 px-2 font-semibold">Dashboard</div>
                     </div>
-                    {/* Page content here */}
 
-                    <Outlet></Outlet>
-                   
-
-
-
-
-
-
-
-                    {/* Page content here */}
-
+                    {/* Main Content */}
+                    <main className="flex-1 p-4">
+                        <Outlet />
+                    </main>
                 </div>
+
+                {/* Sidebar */}
                 <div className="drawer-side">
                     <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-                    <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
-                        {/* Sidebar content here */}
-                        <Profastlogo></Profastlogo>
-                        <li><a>Home</a></li>
-                        <li><NavLink to="/dashboard/myParcels">My Parcels</NavLink></li>
-                    </ul>
+                    <div className="menu bg-base-200 text-base-content w-80 p-4 space-y-2">
+                        {/* Logo */}
+                        <div className="mb-4">
+                            <Profastlogo />
+                        </div>
+
+                        {/* Navigation Links */}
+                        <NavLink
+                            to="/dashboard"
+                            className={({ isActive }) =>
+                                `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
+                            }
+                        >
+                            <AiFillHome className="text-lg" />
+                            <span>Home</span>
+                        </NavLink>
+
+                        <NavLink
+                            to="/dashboard/myParcels"
+                            className={({ isActive }) =>
+                                `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
+                            }
+                        >
+                            <FaBoxOpen className="text-lg" />
+                            <span>My Parcels</span>
+                        </NavLink>
+
+                        <NavLink
+                            to="/dashboard/paymentHistory"
+                            className={({ isActive }) =>
+                                `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
+                            }
+                        >
+                            <FaMoneyCheckAlt className="text-lg" />
+                            <span>Payment History</span>
+                        </NavLink>
+
+                        <NavLink
+                            to="/dashboard/track"
+                            className={({ isActive }) =>
+                                `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
+                            }
+                        >
+                            <FaSearchLocation className="text-lg" />
+                            <span>Track a Package</span>
+                        </NavLink>
+
+                        <NavLink
+                            to="/dashboard/update-profile"
+                            className={({ isActive }) =>
+                                `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
+                            }
+                        >
+                            <FaUserEdit className="text-lg" />
+                            <span>Update Profile</span>
+                        </NavLink>
+
+
+                        <NavLink
+                            to="/dashboard/activeRiders"
+                            className={({ isActive }) =>
+                                `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
+                            }
+                        >
+                            <FaMotorcycle className="text-lg" />
+                            <span>Active Riders</span>
+                        </NavLink>
+
+                        <NavLink
+                            to="/dashboard/pendingRiders"
+                            className={({ isActive }) =>
+                                `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
+                            }
+                        >
+                            <FaUserClock className="text-lg" />
+                            <span>Pending Riders</span>
+                        </NavLink>
+
+                        {/* Back to Main Site */}
+                        <div className="pt-4 mt-4 border-t border-base-300">
+                            <Link to="/" className="btn btn-ghost w-full justify-start">
+                                ← Back to Main Site
+                            </Link>
+                        </div>
+                    </div>
                 </div>
             </div>
-
         </div>
     );
 };

@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { format } from "date-fns";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../../Hooks/useAuth";
 
 const Sendparcel = () => {
   const {
@@ -13,8 +15,10 @@ const Sendparcel = () => {
     reset,
     formState: { errors },
   } = useForm();
+  const {user} = useAuth()
 
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
   const parcelType = watch("type");
   const weight = watch("weight");
 
@@ -59,6 +63,7 @@ const Sendparcel = () => {
       creationDate,
       status: "Processing",
       cost,
+      paymentStatus: "Unpaid", // Added payment status
       deliveryStatus: [
         {
           status: "Processing",
@@ -100,8 +105,7 @@ const Sendparcel = () => {
       });
 
       const response = await axiosSecure.post('/parcels', parcelData);
-      console.log(response.data);
-  
+      
       if (response.data.insertedId) {
         await Swal.fire({
           title: 'Parcel Created Successfully!',
@@ -111,11 +115,19 @@ const Sendparcel = () => {
               <p><strong>Total Cost:</strong> $${cost.toFixed(2)}</p>
               <p>Your parcel has been registered in our system.</p>
               <p>You will receive updates at: <strong>${data.userEmail}</strong></p>
-              <p class="mt-4 font-semibold">You can track your parcel using the tracking number.</p>
+              <p class="mt-4 font-semibold">Please proceed to payment to complete your booking.</p>
             </div>
           `,
           icon: 'success',
-          confirmButtonText: 'OK'
+          showCancelButton: true,
+          confirmButtonText: 'Proceed to Payment',
+          cancelButtonText: 'Pay Later'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate(`/dashboard/payment/${response.data.insertedId}`);
+          } else {
+            navigate('/dashboard/myParcels');
+          }
         });
         reset();
       } else {
@@ -165,17 +177,19 @@ const Sendparcel = () => {
           <h2 className="text-xl font-semibold mb-4">📧 Your Contact Information</h2>
           <label className="label">Email</label>
           <input
-            type="email"
-            {...register("userEmail", {
-              required: "Email is required",
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Invalid email address"
-              }
-            })}
-            className="input input-bordered w-full"
-            placeholder="your@email.com"
-          />
+  type="email"
+  value={user.email}
+  readOnly
+  {...register("userEmail", {
+    required: "Email is required",
+    pattern: {
+      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+      message: "Invalid email address"
+    }
+  })}
+  className="input input-bordered w-full"
+  placeholder="your@email.com"
+/>
           {errors.userEmail && <p className="text-red-500">{errors.userEmail.message}</p>}
         </div>
 

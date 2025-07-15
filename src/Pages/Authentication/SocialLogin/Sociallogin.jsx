@@ -2,18 +2,37 @@ import React from 'react';
 import useAuth from '../../../Hooks/useAuth';
 import Swal from 'sweetalert2';
 import { useLocation, useNavigate } from 'react-router';
+import useAxios from '../../../Hooks/useAxios';
 
 const Sociallogin = () => {
 
   const { signinWithGoogle } = useAuth()
-   const navigate = useNavigate();
-   const location = useLocation()
-   const from = location.state?.from || "/";
+  const navigate = useNavigate();
+  const location = useLocation()
+  const from = location.state?.from || "/";
+  const axiosInstance = useAxios();
+
 
   const handleGoogleSignIn = () => {
     signinWithGoogle()
-      .then(res => {
+      .then(async (res) => {
         console.log(res.user);
+
+        const user = res.user
+
+        const userinfo = {
+          email: user.email,
+          role: 'user', //default role 
+          created_at: new Date().toISOString(),
+          last_log_in: new Date().toISOString()
+
+        }
+        const response = await axiosInstance.post('/users', userinfo)
+        console.log('user update info', response.data);
+
+
+
+
         if (res.user) {
           Swal.fire({
             icon: 'success',
