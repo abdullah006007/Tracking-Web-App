@@ -16,6 +16,10 @@ import BeComeRider from "../Pages/Dashborad/BecomeRider/BeComeRider";
 import PendingRiders from "../Pages/Dashborad/PendingRiders/PendingRiders";
 import ActiveRiders from "../Pages/Dashborad/ActiveRiders/ActiveRiders";
 import UpdateProfile from "../Pages/Dashborad/UpdateProfile/UpdateProfile";
+import AdminManagement from "../Pages/Dashborad/MakeAdmin/AdminManagement";
+import Forbidden from "../Pages/Forbidden/Forbidden";
+import AdminRoute from "../Routes/AdminRoute";
+import AssignRider from "../Pages/Dashborad/AssignRider/AssignRider";
 
 
 
@@ -33,6 +37,12 @@ export const router = createBrowserRouter([
             Component: Coverage,
             loader: ()=> fetch('./warehouses.json')
         },
+        {
+            path: 'forbidden',
+            Component: Forbidden
+
+        },
+
         {
             path:'beComeRider',
             element: <RrivateRooutes>
@@ -94,18 +104,37 @@ export const router = createBrowserRouter([
             Component: TrackParcel
         },
         {
+            path: 'assign-rider',
+            element: <AdminRoute>
+                <AssignRider></AssignRider>
+            </AdminRoute>
+
+        },
+        {
             path: 'pendingRiders',
-            Component:PendingRiders
+            element: 
+            <AdminRoute>
+                <PendingRiders></PendingRiders>
+            </AdminRoute>
         },
         {
             path: 'activeRiders',
-            Component: ActiveRiders
+            element:
+            <AdminRoute>
+                <ActiveRiders></ActiveRiders>
+            </AdminRoute>
         }
         ,
         {
             path: 'update-profile',
             Component: UpdateProfile
 
+        },
+        {
+            path: 'AdminManagement',          
+            element: <AdminRoute>
+                <AdminManagement></AdminManagement>
+            </AdminRoute>
         }
     ]
 

@@ -2,9 +2,23 @@ import React from 'react';
 import { Link, NavLink, Outlet } from 'react-router';
 import Profastlogo from '../Shared/ProfastLogo/Profastlogo';
 import { FaBoxOpen, FaMoneyCheckAlt, FaUserEdit, FaSearchLocation, FaMotorcycle, FaUserClock } from 'react-icons/fa';
+import { MdOutlineAssignmentTurnedIn } from "react-icons/md";
+import { GrUserAdmin } from "react-icons/gr";
 import { AiFillHome } from 'react-icons/ai';
+import useUserRole from '../Hooks/useUserRole';
+
 
 const DashboardLayout = () => {
+
+
+    const { role, roleLoading } = useUserRole()
+    console.log(role);
+
+
+
+
+
+
     return (
         <div className="min-h-screen">
             <div className="drawer lg:drawer-open">
@@ -99,25 +113,69 @@ const DashboardLayout = () => {
                         </NavLink>
 
 
-                        <NavLink
-                            to="/dashboard/activeRiders"
-                            className={({ isActive }) =>
-                                `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
-                            }
-                        >
-                            <FaMotorcycle className="text-lg" />
-                            <span>Active Riders</span>
-                        </NavLink>
 
-                        <NavLink
-                            to="/dashboard/pendingRiders"
-                            className={({ isActive }) =>
-                                `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
-                            }
-                        >
-                            <FaUserClock className="text-lg" />
-                            <span>Pending Riders</span>
-                        </NavLink>
+
+
+
+                        {/* User role */}
+
+
+
+                        {!roleLoading && role === 'admin' &&
+
+
+                            <>
+
+                                <NavLink
+                                    to="/dashboard/assign-rider"
+                                    className={({ isActive }) =>
+                                        `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
+                                    }
+                                >
+                                    <MdOutlineAssignmentTurnedIn  className="text-lg" />
+                                    <span>Assign Rider</span>
+                                </NavLink>
+
+
+
+                                <NavLink
+                                    to="/dashboard/activeRiders"
+                                    className={({ isActive }) =>
+                                        `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
+                                    }
+                                >
+                                    <FaMotorcycle className="text-lg" />
+                                    <span>Active Riders</span>
+                                </NavLink>
+
+                                <NavLink
+                                    to="/dashboard/pendingRiders"
+                                    className={({ isActive }) =>
+                                        `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
+                                    }
+                                >
+                                    <FaUserClock className="text-lg" />
+                                    <span>Pending Riders</span>
+                                </NavLink>
+
+                                <NavLink
+                                    to="/dashboard/AdminManagement"
+                                    className={({ isActive }) =>
+                                        `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
+                                    }
+                                >
+                                    <GrUserAdmin className="text-lg" />
+                                    <span>Admin Management</span>
+                                </NavLink>
+
+
+
+                            </>
+                        }
+
+
+
+
 
                         {/* Back to Main Site */}
                         <div className="pt-4 mt-4 border-t border-base-300">
