@@ -18,7 +18,7 @@ import { motion } from 'framer-motion';
 import useAxiosPublic from '../../../Hooks/useAxiosPublic';
 import Spinner from '../../../Shared/Spinner';
 
-const TrackParcel = () => {
+const TrackParcelPublic = () => {
   const axiosPublic = useAxiosPublic();
   const [trackingNumber, setTrackingNumber] = useState('');
   const [submittedTracking, setSubmittedTracking] = useState('');
@@ -45,17 +45,28 @@ const TrackParcel = () => {
 
   // Fetch tracking info with auto-refresh
   const { data: response, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['trackParcel', submittedTracking],
+    queryKey: ['trackParcelPublic', submittedTracking],
     queryFn: async () => {
       if (!submittedTracking) return null;
-      const res = await axiosPublic.get(`/parcels/tracking/${submittedTracking}`);
-      if (!res.data.success) throw new Error(res.data.message);
-      setLastUpdated(new Date().toLocaleTimeString());
-      return res.data;
+      try {
+        const res = await axiosPublic.get(`/parcels/tracking/${submittedTracking}`);
+        if (!res.data.success) {
+          throw new Error(res.data.message || 'Failed to fetch tracking information');
+        }
+        setLastUpdated(new Date().toLocaleTimeString());
+        return res.data;
+      } catch (err) {
+        // Handle different error cases
+        if (err.response?.status === 404) {
+          throw new Error('Tracking number not found. Please verify your tracking number.');
+        }
+        throw new Error(err.response?.data?.message || 'Failed to fetch tracking information');
+      }
     },
     enabled: !!submittedTracking,
     refetchInterval: 30000,
-    retry: false
+    retry: false,
+    staleTime: 10000
   });
 
   const parcel = response?.data;
@@ -157,7 +168,7 @@ const TrackParcel = () => {
               </div>
             </div>
 
-            {/* Delivery Information - MOVED TO TOP */}
+            {/* Delivery Information */}
             <div className="mt-6">
               <h3 className="font-bold text-gray-800 mb-4">Delivery Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -325,4 +336,4 @@ const TrackParcel = () => {
   );
 };
 
-export default TrackParcel;
+export default TrackParcelPublic;

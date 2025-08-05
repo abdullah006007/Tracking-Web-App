@@ -20,6 +20,10 @@ import AdminManagement from "../Pages/Dashborad/MakeAdmin/AdminManagement";
 import Forbidden from "../Pages/Forbidden/Forbidden";
 import AdminRoute from "../Routes/AdminRoute";
 import AssignRider from "../Pages/Dashborad/AssignRider/AssignRider";
+import RiderRoute from "../Routes/RiderRoute";
+import PendingDelivery from "../Pages/Dashborad/PendingDeliveries/PendingDelivery";
+import TrackParcelPublic from "../Pages/Dashborad/TrackParcelPublic/TrackParcelPublic";
+import About from "../Pages/About/About";
 
 
 
@@ -56,6 +60,15 @@ export const router = createBrowserRouter([
                 <Sendparcel></Sendparcel>
             </RrivateRooutes>
         
+        },
+        {
+            path: 'track-parcel',
+            Component: TrackParcelPublic
+        }
+        ,
+        {
+            path: 'about',
+            Component: About
         }
 
       
@@ -104,6 +117,24 @@ export const router = createBrowserRouter([
             Component: TrackParcel
         },
         {
+            path: 'update-profile',
+            Component: UpdateProfile
+
+        },
+
+        {
+            path: 'pending-deliveries',
+            element: <RiderRoute>
+                <PendingDelivery></PendingDelivery>
+            </RiderRoute>
+
+        },
+
+
+
+
+        // Admin only routes
+        {
             path: 'assign-rider',
             element: <AdminRoute>
                 <AssignRider></AssignRider>
@@ -125,11 +156,7 @@ export const router = createBrowserRouter([
             </AdminRoute>
         }
         ,
-        {
-            path: 'update-profile',
-            Component: UpdateProfile
-
-        },
+        
         {
             path: 'AdminManagement',          
             element: <AdminRoute>

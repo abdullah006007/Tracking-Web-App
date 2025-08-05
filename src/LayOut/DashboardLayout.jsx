@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, NavLink, Outlet } from 'react-router';
 import Profastlogo from '../Shared/ProfastLogo/Profastlogo';
-import { FaBoxOpen, FaMoneyCheckAlt, FaUserEdit, FaSearchLocation, FaMotorcycle, FaUserClock } from 'react-icons/fa';
+import { FaBoxOpen, FaMoneyCheckAlt, FaUserEdit, FaSearchLocation, FaMotorcycle, FaUserClock, FaTasks } from 'react-icons/fa';
 import { MdOutlineAssignmentTurnedIn } from "react-icons/md";
 import { GrUserAdmin } from "react-icons/gr";
 import { AiFillHome } from 'react-icons/ai';
@@ -13,9 +13,6 @@ const DashboardLayout = () => {
 
     const { role, roleLoading } = useUserRole()
     console.log(role);
-
-
-
 
 
 
@@ -116,10 +113,25 @@ const DashboardLayout = () => {
 
 
 
+                        {!roleLoading && (role === 'rider' ) && (
+                            // || role === 'admin'
+                            <>
+                                <NavLink
+                                    to="/dashboard/pending-deliveries"
+                                    className={({ isActive }) =>
+                                        `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'
+                                        }`
+                                    }
+                                >
+                                    <FaTasks className="text-lg" />
+                                    <span>Pending Deliveries</span>
+                                </NavLink>
+                            </>
+                        )}
 
-                        {/* User role */}
 
 
+                        {/* Admin only role */}
 
                         {!roleLoading && role === 'admin' &&
 
@@ -132,7 +144,7 @@ const DashboardLayout = () => {
                                         `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
                                     }
                                 >
-                                    <MdOutlineAssignmentTurnedIn  className="text-lg" />
+                                    <MdOutlineAssignmentTurnedIn className="text-lg" />
                                     <span>Assign Rider</span>
                                 </NavLink>
 
