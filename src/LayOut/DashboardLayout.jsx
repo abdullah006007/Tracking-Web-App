@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, NavLink, Outlet } from 'react-router';
+import { Link, Navigate, NavLink, Outlet } from 'react-router';
 import Profastlogo from '../Shared/ProfastLogo/Profastlogo';
 import { FaBoxOpen, FaMoneyCheckAlt, FaUserEdit, FaSearchLocation, FaMotorcycle, FaUserClock, FaTasks } from 'react-icons/fa';
 import { MdOutlineAssignmentTurnedIn } from "react-icons/md";
@@ -13,6 +13,10 @@ const DashboardLayout = () => {
 
     const { role, roleLoading } = useUserRole()
     console.log(role);
+
+    if (location.pathname === '/dashboard') {
+        return <Navigate to="/dashboard/home" replace />;
+    }
 
 
 
@@ -113,7 +117,7 @@ const DashboardLayout = () => {
 
 
 
-                        {!roleLoading && (role === 'rider' ) && (
+                        {!roleLoading && (role === 'rider') && (
                             // || role === 'admin'
                             <>
                                 <NavLink
