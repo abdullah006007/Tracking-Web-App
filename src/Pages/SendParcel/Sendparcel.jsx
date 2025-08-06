@@ -1,4 +1,3 @@
-// File: Sendparcel.jsx
 import React from "react";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -6,6 +5,7 @@ import { format } from "date-fns";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../Hooks/useAuth";
+import { motion } from "framer-motion";
 
 const Sendparcel = () => {
   const {
@@ -15,7 +15,7 @@ const Sendparcel = () => {
     reset,
     formState: { errors },
   } = useForm();
-  const {user} = useAuth()
+  const { user } = useAuth();
 
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
@@ -43,11 +43,10 @@ const Sendparcel = () => {
   };
 
   const calculateCost = (type, weight = 0) => {
-    const baseCost = 50; // Base cost in USD
+    const baseCost = 50;
     if (type === "document") {
       return baseCost;
     } else {
-      // For non-documents, add $10 per kg
       return baseCost + (Math.max(weight, 0.1) * 10);
     }
   };
@@ -63,7 +62,7 @@ const Sendparcel = () => {
       creationDate,
       status: "Processing",
       cost,
-      paymentStatus: "Unpaid", // Added payment status
+      paymentStatus: "Unpaid",
       deliveryStatus: [
         {
           status: "Processing",
@@ -153,14 +152,45 @@ const Sendparcel = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-4 sm:p-6">
-      <h1 className="text-3xl font-bold mb-2 text-center">International Parcel Booking</h1>
-      <p className="text-lg text-gray-600 mb-6 text-center">China to South Africa Shipping</p>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-5xl mx-auto p-4 sm:p-6"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-10"
+      >
+        <motion.h1 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="text-3xl md:text-4xl  font-bold mb-2 text-blue-800"
+        >
+          International Parcel Booking
+        </motion.h1>
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-lg text-gray-600"
+        >
+          China to South Africa Shipping
+        </motion.p>
+      </motion.div>
 
       {parcelType && (
-        <div className="alert alert-info mb-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+          className="alert alert-info mb-8 shadow-lg"
+        >
           <div>
-            <span>Estimated Cost: ${calculateCost(parcelType, parseFloat(weight || 0)).toFixed(2)}</span>
+            <span className="font-semibold">Estimated Cost: ${calculateCost(parcelType, parseFloat(weight || 0)).toFixed(2)}</span>
             {parcelType === "non-document" && (
               <span className="text-sm block mt-1">($50 base + $10 per kg)</span>
             )}
@@ -168,57 +198,113 @@ const Sendparcel = () => {
               <span className="text-sm block mt-1">(Flat rate $50 for documents)</span>
             )}
           </div>
-        </div>
+        </motion.div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
         {/* Contact */}
-        <div className="bg-base-200 p-4 rounded-xl shadow">
-          <h2 className="text-xl font-semibold mb-4">📧 Your Contact Information</h2>
-          <label className="label">Email</label>
-          <input
-  type="email"
-  value={user.email}
-  readOnly
-  {...register("userEmail", {
-    required: "Email is required",
-    pattern: {
-      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-      message: "Invalid email address"
-    }
-  })}
-  className="input input-bordered w-full"
-  placeholder="your@email.com"
-/>
-          {errors.userEmail && <p className="text-red-500">{errors.userEmail.message}</p>}
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
+        >
+          <motion.h2 
+            initial={{ opacity: 0, x: -10 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
+            viewport={{ once: true }}
+            className="text-xl font-semibold mb-5 flex items-center gap-2"
+          >
+            <span className="text-blue-500">📧</span> Your Contact Information
+          </motion.h2>
+          <div className="space-y-4">
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              viewport={{ once: true }}
+            >
+              <label className="label">Email</label>
+              <input
+                type="email"
+                value={user.email}
+                readOnly
+                {...register("userEmail", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Invalid email address"
+                  }
+                })}
+                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
+                placeholder="your@email.com"
+              />
+              {errors.userEmail && <p className="text-red-500 mt-1">{errors.userEmail.message}</p>}
+            </motion.div>
+          </div>
+        </motion.div>
 
         {/* Parcel Info */}
-        <div className="bg-base-200 p-4 rounded-xl shadow">
-          <h2 className="text-xl font-semibold mb-4">📦 Parcel Information</h2>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          viewport={{ once: true }}
+          className="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
+        >
+          <motion.h2 
+            initial={{ opacity: 0, x: -10 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
+            viewport={{ once: true }}
+            className="text-xl font-semibold mb-5 flex items-center gap-2"
+          >
+            <span className="text-blue-500">📦</span> Parcel Information
+          </motion.h2>
+          <div className="grid sm:grid-cols-2 gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              viewport={{ once: true }}
+            >
               <label className="label">Type</label>
-              <select {...register("type", { required: "Type is required" })} className="select select-bordered">
+              <select 
+                {...register("type", { required: "Type is required" })} 
+                className="select select-bordered w-full focus:ring-2 focus:ring-blue-500"
+              >
                 <option value="">Select type...</option>
                 <option value="document">Document</option>
                 <option value="non-document">Non-Document</option>
               </select>
-              {errors.type && <p className="text-red-500">{errors.type.message}</p>}
-            </div>
+              {errors.type && <p className="text-red-500 mt-1">{errors.type.message}</p>}
+            </motion.div>
 
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
               <label className="label">Title/Description</label>
               <input
                 {...register("title", { required: "Title is required" })}
-                className="input input-bordered"
+                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
                 placeholder="e.g. Important documents"
               />
-              {errors.title && <p className="text-red-500">{errors.title.message}</p>}
-            </div>
+              {errors.title && <p className="text-red-500 mt-1">{errors.title.message}</p>}
+            </motion.div>
 
             {parcelType === "non-document" && (
-              <div className="sm:col-span-2">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.3 }}
+                viewport={{ once: true }}
+                className="sm:col-span-2"
+              >
                 <label className="label">Weight (kg)</label>
                 <input
                   type="number"
@@ -227,25 +313,53 @@ const Sendparcel = () => {
                     required: "Weight is required for non-documents",
                     min: { value: 0.1, message: "Weight must be at least 0.1 kg" }
                   })}
-                  className="input input-bordered"
+                  className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
                 />
-                {errors.weight && <p className="text-red-500">{errors.weight.message}</p>}
-              </div>
+                {errors.weight && <p className="text-red-500 mt-1">{errors.weight.message}</p>}
+              </motion.div>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {/* Sender Info */}
-        <div className="bg-base-200 p-4 rounded-xl shadow">
-          <h2 className="text-xl font-semibold mb-4">🇨🇳 Sender Information (China)</h2>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          viewport={{ once: true }}
+          className="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
+        >
+          <motion.h2 
+            initial={{ opacity: 0, x: -10 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
+            viewport={{ once: true }}
+            className="text-xl font-semibold mb-5 flex items-center gap-2"
+          >
+            <span className="text-blue-500">🇨🇳</span> Sender Information (China)
+          </motion.h2>
+          <div className="grid sm:grid-cols-2 gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              viewport={{ once: true }}
+            >
               <label className="label">Full Name</label>
-              <input {...register("senderName", { required: "Name is required" })} className="input input-bordered w-full" placeholder="Sender's name" />
-              {errors.senderName && <p className="text-red-500">{errors.senderName.message}</p>}
-            </div>
+              <input 
+                {...register("senderName", { required: "Name is required" })} 
+                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500" 
+                placeholder="Sender's name" 
+              />
+              {errors.senderName && <p className="text-red-500 mt-1">{errors.senderName.message}</p>}
+            </motion.div>
 
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
               <label className="label">Contact Number</label>
               <input
                 {...register("senderContact", {
@@ -255,52 +369,118 @@ const Sendparcel = () => {
                     message: "Invalid phone number"
                   }
                 })}
-                className="input input-bordered w-full"
+                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
                 placeholder="e.g. +86 123 4567 8910"
               />
-              {errors.senderContact && <p className="text-red-500">{errors.senderContact.message}</p>}
-            </div>
+              {errors.senderContact && <p className="text-red-500 mt-1">{errors.senderContact.message}</p>}
+            </motion.div>
 
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              viewport={{ once: true }}
+            >
               <label className="label">Region/Province</label>
-              <select {...register("senderRegion", { required: "Region is required" })} className="select select-bordered w-full">
+              <select 
+                {...register("senderRegion", { required: "Region is required" })} 
+                className="select select-bordered w-full focus:ring-2 focus:ring-blue-500"
+              >
                 <option value="">Select...</option>
                 {chineseRegions.map(r => <option key={r} value={r}>{r}</option>)}
               </select>
-              {errors.senderRegion && <p className="text-red-500">{errors.senderRegion.message}</p>}
-            </div>
+              {errors.senderRegion && <p className="text-red-500 mt-1">{errors.senderRegion.message}</p>}
+            </motion.div>
 
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
               <label className="label">City</label>
-              <input {...register("senderCity", { required: "City is required" })} className="input input-bordered w-full" placeholder="e.g. Shanghai" />
-              {errors.senderCity && <p className="text-red-500">{errors.senderCity.message}</p>}
-            </div>
+              <input 
+                {...register("senderCity", { required: "City is required" })} 
+                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500" 
+                placeholder="e.g. Shanghai" 
+              />
+              {errors.senderCity && <p className="text-red-500 mt-1">{errors.senderCity.message}</p>}
+            </motion.div>
 
-            <div className="sm:col-span-2">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.5 }}
+              viewport={{ once: true }}
+              className="sm:col-span-2"
+            >
               <label className="label">Address</label>
-              <input {...register("senderAddress", { required: "Address is required" })} className="input input-bordered w-full" placeholder="Street, district..." />
-              {errors.senderAddress && <p className="text-red-500">{errors.senderAddress.message}</p>}
-            </div>
+              <input 
+                {...register("senderAddress", { required: "Address is required" })} 
+                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500" 
+                placeholder="Street, district..." 
+              />
+              {errors.senderAddress && <p className="text-red-500 mt-1">{errors.senderAddress.message}</p>}
+            </motion.div>
 
-            <div className="sm:col-span-2">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.6 }}
+              viewport={{ once: true }}
+              className="sm:col-span-2"
+            >
               <label className="label">Pickup Instructions</label>
-              <textarea {...register("pickupInstruction", { required: "Instructions required" })} className="textarea textarea-bordered w-full" rows={3} placeholder="Any special instructions" />
-              {errors.pickupInstruction && <p className="text-red-500">{errors.pickupInstruction.message}</p>}
-            </div>
+              <textarea 
+                {...register("pickupInstruction", { required: "Instructions required" })} 
+                className="textarea textarea-bordered w-full focus:ring-2 focus:ring-blue-500" 
+                rows={3} 
+                placeholder="Any special instructions" 
+              />
+              {errors.pickupInstruction && <p className="text-red-500 mt-1">{errors.pickupInstruction.message}</p>}
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Receiver Info */}
-        <div className="bg-base-200 p-4 rounded-xl shadow">
-          <h2 className="text-xl font-semibold mb-4">🇿🇦 Receiver Information (South Africa)</h2>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          viewport={{ once: true }}
+          className="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
+        >
+          <motion.h2 
+            initial={{ opacity: 0, x: -10 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
+            viewport={{ once: true }}
+            className="text-xl font-semibold mb-5 flex items-center gap-2"
+          >
+            <span className="text-blue-500">🇿🇦</span> Receiver Information (South Africa)
+          </motion.h2>
+          <div className="grid sm:grid-cols-2 gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              viewport={{ once: true }}
+            >
               <label className="label">Full Name</label>
-              <input {...register("receiverName", { required: "Name is required" })} className="input input-bordered w-full" placeholder="Receiver's name" />
-              {errors.receiverName && <p className="text-red-500">{errors.receiverName.message}</p>}
-            </div>
+              <input 
+                {...register("receiverName", { required: "Name is required" })} 
+                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500" 
+                placeholder="Receiver's name" 
+              />
+              {errors.receiverName && <p className="text-red-500 mt-1">{errors.receiverName.message}</p>}
+            </motion.div>
 
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
               <label className="label">Contact Number</label>
               <input
                 {...register("receiverContact", {
@@ -310,46 +490,97 @@ const Sendparcel = () => {
                     message: "Invalid phone number"
                   }
                 })}
-                className="input input-bordered w-full"
+                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
                 placeholder="e.g. +27 12 345 6789"
               />
-              {errors.receiverContact && <p className="text-red-500">{errors.receiverContact.message}</p>}
-            </div>
+              {errors.receiverContact && <p className="text-red-500 mt-1">{errors.receiverContact.message}</p>}
+            </motion.div>
 
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              viewport={{ once: true }}
+            >
               <label className="label">Province</label>
-              <select {...register("receiverRegion", { required: "Province is required" })} className="select select-bordered w-full">
+              <select 
+                {...register("receiverRegion", { required: "Province is required" })} 
+                className="select select-bordered w-full focus:ring-2 focus:ring-blue-500"
+              >
                 <option value="">Select...</option>
                 {southAfricanRegions.map(r => <option key={r} value={r}>{r}</option>)}
               </select>
-              {errors.receiverRegion && <p className="text-red-500">{errors.receiverRegion.message}</p>}
-            </div>
+              {errors.receiverRegion && <p className="text-red-500 mt-1">{errors.receiverRegion.message}</p>}
+            </motion.div>
 
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
               <label className="label">City</label>
-              <input {...register("receiverCity", { required: "City is required" })} className="input input-bordered w-full" placeholder="e.g. Johannesburg" />
-              {errors.receiverCity && <p className="text-red-500">{errors.receiverCity.message}</p>}
-            </div>
+              <input 
+                {...register("receiverCity", { required: "City is required" })} 
+                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500" 
+                placeholder="e.g. Johannesburg" 
+              />
+              {errors.receiverCity && <p className="text-red-500 mt-1">{errors.receiverCity.message}</p>}
+            </motion.div>
 
-            <div className="sm:col-span-2">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.5 }}
+              viewport={{ once: true }}
+              className="sm:col-span-2"
+            >
               <label className="label">Address</label>
-              <input {...register("receiverAddress", { required: "Address is required" })} className="input input-bordered w-full" placeholder="Street address..." />
-              {errors.receiverAddress && <p className="text-red-500">{errors.receiverAddress.message}</p>}
-            </div>
+              <input 
+                {...register("receiverAddress", { required: "Address is required" })} 
+                className="input input-bordered w-full focus:ring-2 focus:ring-blue-500" 
+                placeholder="Street address..." 
+              />
+              {errors.receiverAddress && <p className="text-red-500 mt-1">{errors.receiverAddress.message}</p>}
+            </motion.div>
 
-            <div className="sm:col-span-2">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.6 }}
+              viewport={{ once: true }}
+              className="sm:col-span-2"
+            >
               <label className="label">Delivery Instructions (Optional)</label>
-              <textarea {...register("deliveryInstruction")} className="textarea textarea-bordered w-full" rows={3} placeholder="Any delivery instructions" />
-            </div>
+              <textarea 
+                {...register("deliveryInstruction")} 
+                className="textarea textarea-bordered w-full focus:ring-2 focus:ring-blue-500" 
+                rows={3} 
+                placeholder="Any delivery instructions" 
+              />
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Submit */}
-        <div className="text-center">
-          <button type="submit" className="btn btn-primary px-8 py-3 text-lg">Submit Parcel</button>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          viewport={{ once: true }}
+          className="text-center mt-10"
+        >
+          <motion.button
+            type="submit"
+            className="btn btn-primary px-10 py-4 text-lg font-semibold shadow-lg"
+            whileHover={{ scale: 1.03, boxShadow: "0 5px 15px rgba(0, 98, 255, 0.3)" }}
+            whileTap={{ scale: 0.98 }}
+          >
+            Submit Parcel
+          </motion.button>
+        </motion.div>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

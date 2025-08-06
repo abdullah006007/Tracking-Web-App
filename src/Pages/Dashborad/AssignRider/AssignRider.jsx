@@ -30,7 +30,7 @@ const AssignRider = () => {
         { value: "awaiting_courier", label: "Waiting for courier", icon: "🚚", color: "bg-lime-100" },
         { value: "in_transit", label: "In Transit", icon: <FaTruckLoading />, color: "bg-blue-100" },
         { value: "delivered", label: "Delivered", icon: <FaCheck />, color: "bg-green-100" },
-        { value: "cancelled", label: "Cancelled", icon: <FaTimes />, color: "bg-red-100" }
+        // { value: "cancelled", label: "Cancelled", icon: <FaTimes />, color: "bg-red-100" }
     ];
 
     // Helper function to get the current delivery status
@@ -177,8 +177,8 @@ const AssignRider = () => {
                 return "Local Delivery";
             case "delivered":
                 return "Delivered to Recipient";
-            case "cancelled":
-                return "Cancelled";
+            // case "cancelled":
+            //     return "Cancelled";
             default:
                 return "In Process";
         }

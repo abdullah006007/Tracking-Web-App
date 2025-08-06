@@ -113,7 +113,7 @@ const Register = () => {
 
 
                             {/* Image Field */}
-                            <label className="label">Your Name</label>
+                            <label className="label">Please Select Your Profile Picture</label>
                             <input
                                 type="file"
 

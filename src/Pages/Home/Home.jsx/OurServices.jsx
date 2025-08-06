@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { FaShippingFast, FaMapMarkedAlt, FaWarehouse, FaMoneyBillWave, FaBuilding, FaUndoAlt } from "react-icons/fa";
 
 const services = [
@@ -34,49 +35,82 @@ const services = [
 ];
 
 const OurServices = () => {
+    // Animation variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.15,
+                when: "beforeChildren"
+            }
+        }
+    };
+
+    const cardVariants = {
+        hidden: { opacity: 0, y: 30, rotateX: 15 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            rotateX: 0,
+            transition: {
+                duration: 0.7,
+                ease: [0.25, 0.1, 0.25, 1]
+            }
+        },
+        hover: {
+            y: -10,
+            boxShadow: "0 15px 30px -5px rgba(0, 0, 0, 0.1)",
+            transition: { duration: 0.3 }
+        }
+    };
+
     return (
-        <section className="py-16 px-4 md:px-10 lg:px-20 bg-base-100">
-            <div className="text-center mb-10">
+        <motion.section 
+            className="py-16 px-4 md:px-10 lg:px-20 bg-base-100"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+            variants={containerVariants}
+        >
+            <motion.div 
+                className="text-center mb-10"
+                variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: {
+                        opacity: 1,
+                        y: 0,
+                        transition: { duration: 0.6 }
+                    }
+                }}
+            >
                 <h2 className="text-3xl font-bold mb-4">Our Services</h2>
                 <p className="text-base text-gray-600 max-w-2xl mx-auto">
                     Enjoy fast, reliable parcel delivery with real-time tracking and zero hassle. From personal packages to business shipments — we deliver on time, every time.
                 </p>
-            </div>
+            </motion.div>
 
-
-
-            <div
-
-                
-
-
-
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <motion.div 
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+                variants={containerVariants}
+            >
                 {services.map((service, index) => (
-                    <div
-
-
-                    data-aos="flip-up"
-                data-aos-offset="200"
-                data-aos-delay="50"
-                data-aos-duration="1000"
-                data-aos-easing="ease-in-out"
-                data-aos-mirror="true"
-                data-aos-once="false"
-                data-aos-anchor-placement="top-center"
-                    
-                    
-                    
-                    key={index} className="card bg-base-200 shadow-md hover:shadow-xl transition duration-300">
+                    <motion.div
+                        key={index}
+                        className="card bg-base-200 shadow-md hover:shadow-xl transition-all"
+                        variants={cardVariants}
+                        whileHover="hover"
+                        viewport={{ once: true }}
+                    >
                         <div className="card-body items-center text-center">
                             {service.icon}
                             <h3 className="card-title text-xl font-semibold mb-2">{service.title}</h3>
                             <p className="text-sm text-gray-600">{service.description}</p>
                         </div>
-                    </div>
+                    </motion.div>
                 ))}
-            </div>
-        </section>
+            </motion.div>
+        </motion.section>
     );
 };
 

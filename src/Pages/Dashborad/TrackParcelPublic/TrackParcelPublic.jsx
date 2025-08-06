@@ -40,7 +40,7 @@ const TrackParcelPublic = () => {
     { value: "awaiting_courier", label: "Awaiting Courier", icon: <FaTruck className="text-white" />, color: "bg-lime-500" },
     { value: "in_transit", label: "In Transit", icon: <FaTruck className="text-white" />, color: "bg-blue-500" },
     { value: "delivered", label: "Delivered", icon: <FaCheck className="text-white" />, color: "bg-green-500" },
-    { value: "cancelled", label: "Cancelled", icon: <FaTimes className="text-white" />, color: "bg-red-500" }
+    // { value: "cancelled", label: "Cancelled", icon: <FaTimes className="text-white" />, color: "bg-red-500" }
   ];
 
   // Fetch tracking info with auto-refresh
@@ -56,7 +56,6 @@ const TrackParcelPublic = () => {
         setLastUpdated(new Date().toLocaleTimeString());
         return res.data;
       } catch (err) {
-        // Handle different error cases
         if (err.response?.status === 404) {
           throw new Error('Tracking number not found. Please verify your tracking number.');
         }
@@ -98,11 +97,35 @@ const TrackParcelPublic = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Search Form */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-500 p-6 rounded-xl shadow-lg mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Track Your Package</h1>
-        <p className="text-blue-100 mb-6">Enter your tracking number to get real-time updates</p>
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="bg-gradient-to-r from-blue-600 to-blue-500 p-8 rounded-xl shadow-2xl mb-8"
+      >
+        <motion.h1 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="text-3xl md:text-4xl font-bold text-white mb-2"
+        >
+          Track Your Package
+        </motion.h1>
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-blue-100 mb-6 text-lg"
+        >
+          Enter your tracking number to get real-time updates
+        </motion.p>
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-grow">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="relative flex-grow"
+          >
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <FaSearch className="text-blue-300" />
             </div>
@@ -110,28 +133,32 @@ const TrackParcelPublic = () => {
               type="text"
               value={trackingNumber}
               onChange={(e) => setTrackingNumber(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border-0 rounded-lg bg-white/90 focus:ring-2 focus:ring-white focus:bg-white transition-all duration-300 placeholder-blue-300"
+              className="w-full pl-10 pr-4 py-4 border-0 rounded-lg bg-white/90 focus:ring-2 focus:ring-white focus:bg-white transition-all duration-300 placeholder-blue-300 text-lg"
               placeholder="Enter your tracking number"
               required
             />
-          </div>
+          </motion.div>
           <motion.button
             type="submit"
-            className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 flex items-center justify-center gap-2 shadow-md"
-            whileHover={{ scale: 1.02 }}
+            className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 flex items-center justify-center gap-2 shadow-lg text-lg"
+            whileHover={{ scale: 1.03, boxShadow: "0 10px 20px rgba(0,0,0,0.1)" }}
             whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <GiDeliveryDrone size={20} />
+            <GiDeliveryDrone size={24} />
             Track Package
           </motion.button>
         </form>
-      </div>
+      </motion.div>
 
       {/* Results */}
       {isError && (
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
           className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-lg shadow-sm"
         >
           <div className="flex items-center">
@@ -143,69 +170,123 @@ const TrackParcelPublic = () => {
 
       {parcel && (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-white rounded-xl shadow-lg overflow-hidden"
+          transition={{ duration: 0.8 }}
+          className="bg-white rounded-xl shadow-2xl overflow-hidden"
         >
           {/* Parcel Summary */}
-          <div className="p-6 border-b bg-gray-50">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+          <div className="p-8 border-b bg-gray-50">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="flex flex-col md:flex-row md:items-center md:justify-between"
+            >
               <div>
-                <h2 className="text-xl font-bold text-gray-800 mb-2">Shipment Details</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">Shipment Details</h2>
                 <div className="flex flex-wrap items-center gap-4">
-                  <p className="text-gray-600">Tracking ID: <span className="font-mono font-semibold bg-blue-50 px-2 py-1 rounded">{parcel.trackingNumber}</span></p>
+                  <motion.p 
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    viewport={{ once: true }}
+                    className="text-gray-600"
+                  >
+                    Tracking ID: <span className="font-mono font-semibold bg-blue-50 px-3 py-1.5 rounded-md">{parcel.trackingNumber}</span>
+                  </motion.p>
                   {parcel.estimatedDelivery && (
-                    <p className="text-gray-600">Est. Delivery: <span className="font-semibold">
-                      {new Date(parcel.estimatedDelivery).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                    </span></p>
+                    <motion.p 
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: 0.2 }}
+                      viewport={{ once: true }}
+                      className="text-gray-600"
+                    >
+                      Est. Delivery: <span className="font-semibold">
+                        {new Date(parcel.estimatedDelivery).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                      </span>
+                    </motion.p>
                   )}
-                  <p className="text-sm text-gray-500 flex items-center">
+                  <motion.p 
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    viewport={{ once: true }}
+                    className="text-sm text-gray-500 flex items-center"
+                  >
                     <RiLoader4Fill className="animate-spin mr-1" />
                     Last updated: {lastUpdated}
-                  </p>
+                  </motion.p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Delivery Information */}
-            <div className="mt-6">
-              <h3 className="font-bold text-gray-800 mb-4">Delivery Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="mt-8"
+            >
+              <h3 className="font-bold text-gray-800 mb-5 text-xl">Delivery Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  viewport={{ once: true }}
+                  className="bg-white p-5 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow"
+                >
                   <div className="flex items-center">
-                    <div className="p-2 rounded-full bg-blue-100 text-blue-600 mr-3">
-                      <GiDeliveryDrone size={18} />
+                    <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+                      <GiDeliveryDrone size={22} />
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Shipping Method</p>
-                      <p className="font-medium">{parcel.courier || 'Standard Shipping'}</p>
+                      <p className="font-medium text-lg">{parcel.courier || 'Standard Shipping'}</p>
                     </div>
                   </div>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                </motion.div>
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  viewport={{ once: true }}
+                  className="bg-white p-5 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow"
+                >
                   <div className="flex items-center">
-                    <div className="p-2 rounded-full bg-green-100 text-green-600 mr-3">
-                      <MdUpdate size={18} />
+                    <div className="p-3 rounded-full bg-green-100 text-green-600 mr-4">
+                      <MdUpdate size={22} />
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Current Status</p>
-                      <p className="font-medium">
+                      <p className="font-medium text-lg">
                         {allStatuses.find(s => s.value === parcel.deliveryStatus[parcel.deliveryStatus.length - 1]?.status)?.label || 'Processing'}
                       </p>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           {/* Delivery Status Timeline */}
-          <div className="p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">Delivery Progress</h2>
+          <div className="p-8">
+            <motion.h2 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="text-2xl font-bold text-gray-800 mb-8"
+            >
+              Delivery Progress
+            </motion.h2>
             <div className="relative">
-              <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-              <div className="space-y-8">
+              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+              <div className="space-y-10">
                 {allStatuses.map((status, index) => {
                   const isCompleted = index < getCurrentStatusIndex();
                   const isCurrent = index === getCurrentStatusIndex();
@@ -214,9 +295,10 @@ const TrackParcelPublic = () => {
                   return (
                     <motion.div 
                       key={status.value}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
+                      initial={{ opacity: 0, x: -30 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      viewport={{ once: true }}
                       className="flex items-start"
                     >
                       <div className="relative z-10">
@@ -236,30 +318,36 @@ const TrackParcelPublic = () => {
                               repeat: Infinity,
                               repeatDelay: 0.5
                             }}
-                            className={`flex-shrink-0 h-10 w-10 rounded-full ${status.color} flex items-center justify-center text-white shadow-md`}
+                            className={`flex-shrink-0 h-12 w-12 rounded-full ${status.color} flex items-center justify-center text-white shadow-lg`}
                           >
                             {status.icon}
                           </motion.div>
                         ) : isCompleted ? (
-                          <div className={`flex-shrink-0 h-10 w-10 rounded-full ${status.color} flex items-center justify-center text-white shadow-md`}>
+                          <motion.div
+                            whileHover={{ scale: 1.1 }}
+                            className={`flex-shrink-0 h-12 w-12 rounded-full ${status.color} flex items-center justify-center text-white shadow-lg`}
+                          >
                             {status.icon}
-                          </div>
+                          </motion.div>
                         ) : (
-                          <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 shadow-md">
-                            <BsClock className="text-gray-500" />
+                          <div className="flex-shrink-0 h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 shadow-lg">
+                            <BsClock className="text-gray-500" size={18} />
                           </div>
                         )}
                       </div>
-                      <div className="ml-6 pb-8">
+                      <motion.div 
+                        whileHover={{ x: 5 }}
+                        className="ml-8 pb-10"
+                      >
                         <div className="flex items-center">
-                          <p className={`font-semibold ${isCurrent ? 'text-blue-600' : isCompleted ? 'text-gray-800' : 'text-gray-500'}`}>
+                          <p className={`text-lg font-semibold ${isCurrent ? 'text-blue-600' : isCompleted ? 'text-gray-800' : 'text-gray-500'}`}>
                             {status.label}
                           </p>
                           {isCurrent && (
                             <motion.span
                               animate={{ opacity: [0.5, 1, 0.5] }}
                               transition={{ duration: 1.5, repeat: Infinity }}
-                              className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full"
+                              className="ml-3 text-xs bg-blue-100 text-blue-800 px-3 py-1 rounded-full"
                             >
                               Active
                             </motion.span>
@@ -267,11 +355,11 @@ const TrackParcelPublic = () => {
                         </div>
                         {hasOccurred ? (
                           <>
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className="text-gray-600 mt-2">
                               {parcel.deliveryStatus.find(s => s.status === status.value)?.description || 
                                `Package ${status.label.toLowerCase()}`}
                             </p>
-                            <p className="text-xs text-gray-400 mt-2">
+                            <p className="text-sm text-gray-400 mt-3">
                               {new Date(parcel.deliveryStatus.find(s => s.status === status.value)?.date).toLocaleString('en-US', {
                                 weekday: 'short',
                                 day: 'numeric',
@@ -281,18 +369,18 @@ const TrackParcelPublic = () => {
                               })}
                             </p>
                             {parcel.deliveryStatus.find(s => s.status === status.value)?.location && (
-                              <div className="flex items-center text-sm text-gray-500 mt-2">
-                                <FaMapMarkerAlt className="mr-1 text-gray-400" />
+                              <div className="flex items-center text-gray-500 mt-2">
+                                <FaMapMarkerAlt className="mr-2 text-gray-400" />
                                 <span>{parcel.deliveryStatus.find(s => s.status === status.value)?.location}</span>
                               </div>
                             )}
                           </>
                         ) : (
-                          <p className="text-sm text-gray-400 mt-1">
+                          <p className="text-gray-400 mt-2">
                             {isCurrent ? 'This step is currently in progress' : 'This step will occur next'}
                           </p>
                         )}
-                      </div>
+                      </motion.div>
                     </motion.div>
                   );
                 })}
@@ -305,31 +393,63 @@ const TrackParcelPublic = () => {
       {/* Empty State */}
       {!parcel && !isError && (
         <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="bg-white rounded-xl shadow-lg overflow-hidden p-8 text-center"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          className="bg-white rounded-xl shadow-2xl overflow-hidden p-10 text-center"
         >
-          <div className="max-w-md mx-auto">
-            <div className="p-4 bg-blue-50 rounded-full inline-block mb-4">
-              <GiDeliveryDrone className="text-blue-500" size={40} />
-            </div>
-            <h2 className="text-xl font-bold text-gray-800 mb-2">Track Your Shipment</h2>
-            <p className="text-gray-600 mb-6">Enter your tracking number above to see real-time updates on your package's journey.</p>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="max-w-md mx-auto"
+          >
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="p-5 bg-blue-50 rounded-full inline-block mb-6"
+            >
+              <GiDeliveryDrone className="text-blue-500" size={50} />
+            </motion.div>
+            <motion.h2 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="text-2xl font-bold text-gray-800 mb-3"
+            >
+              Track Your Shipment
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-gray-600 mb-8 text-lg"
+            >
+              Enter your tracking number above to see real-time updates on your package's journey.
+            </motion.p>
             
-            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 text-left rounded-lg">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="bg-blue-50 border-l-4 border-blue-400 p-5 text-left rounded-lg"
+            >
               <div className="flex">
                 <div className="flex-shrink-0">
-                  <FaInfoCircle className="h-5 w-5 text-blue-400" />
+                  <FaInfoCircle className="h-6 w-6 text-blue-400" />
                 </div>
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-blue-800">Where to find your tracking number</h3>
-                  <p className="text-sm text-blue-700 mt-1">
+                <div className="ml-4">
+                  <h3 className="text-md font-medium text-blue-800">Where to find your tracking number</h3>
+                  <p className="text-blue-700 mt-2">
                     Check your order confirmation email or the shipping confirmation from the seller.
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </motion.div>
       )}
     </div>
