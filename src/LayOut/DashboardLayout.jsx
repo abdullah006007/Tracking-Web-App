@@ -60,7 +60,7 @@ const DashboardLayout = () => {
 
                         {/* Navigation Links */}
                         <NavLink
-                            to="/dashboard"
+                            to="/dashboard/home"
                             className={({ isActive }) =>
                                 `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
                             }

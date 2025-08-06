@@ -24,6 +24,7 @@ import RiderRoute from "../Routes/RiderRoute";
 import PendingDelivery from "../Pages/Dashborad/PendingDeliveries/PendingDelivery";
 import TrackParcelPublic from "../Pages/Dashborad/TrackParcelPublic/TrackParcelPublic";
 import About from "../Pages/About/About";
+import Dash_Home from "../Pages/Dashborad/Home/Dash_Home";
 
 
 
@@ -97,6 +98,11 @@ export const router = createBrowserRouter([
         <DashboardLayout></DashboardLayout>
     </RrivateRooutes>,
     children:[
+        {
+            path: 'home',
+            Component: Dash_Home
+
+        },
         {
 
             path: 'myParcels',
