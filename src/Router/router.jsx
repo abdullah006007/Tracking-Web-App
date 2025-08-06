@@ -25,6 +25,7 @@ import PendingDelivery from "../Pages/Dashborad/PendingDeliveries/PendingDeliver
 import TrackParcelPublic from "../Pages/Dashborad/TrackParcelPublic/TrackParcelPublic";
 import About from "../Pages/About/About";
 import Dash_Home from "../Pages/Dashborad/Home/Dash_Home";
+import SendParcel from "../Pages/Dashborad/SendParcel/SendParcel";
 
 
 
@@ -55,13 +56,6 @@ export const router = createBrowserRouter([
             </RrivateRooutes>
         }
         ,
-        {
-            path: 'sendParcel',
-            element: <RrivateRooutes>
-                <Sendparcel></Sendparcel>
-            </RrivateRooutes>
-        
-        },
         {
             path: 'track-parcel',
             Component: TrackParcelPublic
@@ -147,6 +141,17 @@ export const router = createBrowserRouter([
             </AdminRoute>
 
         },
+
+
+
+        {
+            path: 'send-parcel',
+            element: <AdminRoute>
+                <SendParcel></SendParcel>
+            </AdminRoute>
+
+        },
+        
         {
             path: 'pendingRiders',
             element: 

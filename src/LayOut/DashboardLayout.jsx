@@ -6,6 +6,7 @@ import { MdOutlineAssignmentTurnedIn } from "react-icons/md";
 import { GrUserAdmin } from "react-icons/gr";
 import { AiFillHome } from 'react-icons/ai';
 import useUserRole from '../Hooks/useUserRole';
+import { IoGiftOutline } from "react-icons/io5";
 
 
 const DashboardLayout = () => {
@@ -141,6 +142,17 @@ const DashboardLayout = () => {
 
 
                             <>
+
+                                <NavLink
+                                    to="/dashboard/send-parcel"
+                                    className={({ isActive }) =>
+                                        `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-primary text-white' : 'hover:bg-base-300'}`
+                                    }
+                                >
+                                    <IoGiftOutline className="text-lg" />
+                                    <span>Send Parcel</span>
+                                </NavLink>
+
 
                                 <NavLink
                                     to="/dashboard/assign-rider"

@@ -4,7 +4,7 @@ import { FaShippingFast, FaMapMarkedAlt, FaWarehouse, FaMoneyBillWave, FaBuildin
 const services = [
     {
         title: "Express & Standard Delivery",
-        description: "We deliver parcels within 24–72 hours in Dhaka, Chittagong, Sylhet, Khulna, and Rajshahi. Express delivery available in Dhaka within 4–6 hours from pick-up to drop-off.",
+        description: "We deliver parcels from china to in South Africa",
         icon: <FaShippingFast className="text-4xl text-primary mb-4" />
     },
     {
@@ -19,7 +19,7 @@ const services = [
     },
     {
         title: "Cash on Home Delivery",
-        description: "100% cash on delivery anywhere in Bangladesh with guaranteed safety of your product.",
+        description: "100% cash on delivery anywhere in South Africa with guaranteed safety of your product.",
         icon: <FaMoneyBillWave className="text-4xl text-primary mb-4" />
     },
     {

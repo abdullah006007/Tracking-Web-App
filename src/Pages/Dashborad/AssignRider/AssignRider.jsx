@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FaMotorcycle, FaCheck, FaTimes, FaTruckLoading, FaInfoCircle, FaMoneyBillWave, FaTrash } from "react-icons/fa";
-import { useState } from "react";
+import { FaMotorcycle, FaCheck, FaTimes, FaTruckLoading, FaInfoCircle, FaMoneyBillWave, FaTrash, FaSearch } from "react-icons/fa";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
@@ -11,7 +11,9 @@ const AssignRider = () => {
     const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [selectedStatus, setSelectedStatus] = useState(null);
-    const [showPaidParcels, setShowPaidParcels] = useState(true); // Default to showing paid parcels
+    const [showPaidParcels, setShowPaidParcels] = useState(true);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
     const queryClient = useQueryClient();
 
     // All possible status options in order
@@ -30,8 +32,18 @@ const AssignRider = () => {
         { value: "awaiting_courier", label: "Waiting for courier", icon: "🚚", color: "bg-lime-100" },
         { value: "in_transit", label: "In Transit", icon: <FaTruckLoading />, color: "bg-blue-100" },
         { value: "delivered", label: "Delivered", icon: <FaCheck />, color: "bg-green-100" },
-        // { value: "cancelled", label: "Cancelled", icon: <FaTimes />, color: "bg-red-100" }
     ];
+
+    // Debounce search term
+    useEffect(() => {
+        const timerId = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 500);
+
+        return () => {
+            clearTimeout(timerId);
+        };
+    }, [searchTerm]);
 
     // Helper function to get the current delivery status
     const getCurrentDeliveryStatus = (parcel) => {
@@ -59,10 +71,19 @@ const AssignRider = () => {
         retry: 2,
     });
 
-    // Filter parcels based on showPaidParcels state
-    const filteredParcels = showPaidParcels
-        ? allParcels
-        : allParcels.filter(parcel => parcel.paymentStatus !== "Paid");
+    // Filter parcels based on showPaidParcels state and search term
+    const filteredParcels = allParcels.filter(parcel => {
+        // Apply payment status filter
+        const paymentFilter = showPaidParcels ? true : parcel.paymentStatus !== "Paid";
+        
+        // Apply search filter if search term exists
+        const searchFilter = debouncedSearchTerm 
+            ? parcel.trackingNumber.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) || 
+              parcel.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+            : true;
+        
+        return paymentFilter && searchFilter;
+    });
 
     // Fetch all active riders
     const {
@@ -167,7 +188,6 @@ const AssignRider = () => {
             case "international_shipping":
                 return "In Transit (International)";
             case "arrived_at_customs":
-                return "Destination Customs";
             case "clearance_finished":
             case "arrived_at_local_warehouse":
             case "local_quality_check":
@@ -177,8 +197,6 @@ const AssignRider = () => {
                 return "Local Delivery";
             case "delivered":
                 return "Delivered to Recipient";
-            // case "cancelled":
-            //     return "Cancelled";
             default:
                 return "In Process";
         }
@@ -379,6 +397,35 @@ const AssignRider = () => {
                             </div>
                         </div>
                     </div>
+
+                    {/* Search Input */}
+                    <div className="mt-4">
+                        <div className="relative max-w-md">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <FaSearch className="text-gray-400" />
+                            </div>
+                            <input
+                                type="text"
+                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="Search by tracking number or title..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            {searchTerm && (
+                                <button
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                    onClick={() => setSearchTerm("")}
+                                >
+                                    <FaTimes className="text-gray-400 hover:text-gray-500 cursor-pointer" />
+                                </button>
+                            )}
+                        </div>
+                        {debouncedSearchTerm && (
+                            <p className="mt-1 text-xs text-gray-500">
+                                Showing results for: <span className="font-medium">"{debouncedSearchTerm}"</span>
+                            </p>
+                        )}
+                    </div>
                 </div>
 
                 {filteredParcels.length === 0 ? (
@@ -388,8 +435,12 @@ const AssignRider = () => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                             </svg>
                             <div>
-                                <h3 className="font-bold">No parcels available</h3>
-                                <p className="text-sm">No parcels match the current filters.</p>
+                                <h3 className="font-bold">No parcels found</h3>
+                                <p className="text-sm">
+                                    {debouncedSearchTerm 
+                                        ? "No parcels match your search criteria." 
+                                        : "No parcels match the current filters."}
+                                </p>
                             </div>
                         </div>
                     </div>

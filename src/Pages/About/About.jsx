@@ -19,22 +19,17 @@ import useAxiosPublic from '../../Hooks/useAxiosPublic';
 const About = () => {
   const axiosPublic = useAxiosPublic();
   const stats = [
-    { value: '15+', label: 'Years Experience', icon: <FaChartLine className="text-3xl" /> },
-    { value: '500+', label: 'Happy Clients', icon: <FaHandshake className="text-3xl" /> },
-    { value: '50+', label: 'Team Members', icon: <FaUsers className="text-3xl" /> },
-    { value: '24/7', label: 'Support', icon: <FaTruck className="text-3xl" /> }
+    { value: '8+', label: 'Years Experience', icon: <FaChartLine className="text-3xl" /> },
+    { value: '500+', label: 'Satisfied Clients', icon: <FaHandshake className="text-3xl" /> },
+    { value: '3', label: 'China Warehouses', icon: <FaWarehouse className="text-3xl" /> },
+    { value: '3', label: 'SA Warehouses', icon: <MdStorage className="text-3xl" /> }
   ];
 
   const services = [
     { 
-      icon: <MdOutlineLocalShipping className="text-4xl" />, 
-      title: 'Road Freight', 
-      description: 'Efficient transportation across cities and countries with our modern fleet.' 
-    },
-    { 
       icon: <GiCargoShip className="text-4xl" />, 
-      title: 'Ocean Freight', 
-      description: 'Global shipping solutions with competitive rates and reliable schedules.' 
+      title: 'Sea Freight', 
+      description: 'Reliable ocean shipping with weekly departures from China to South Africa.' 
     },
     { 
       icon: <MdAirplanemodeActive className="text-4xl" />, 
@@ -44,17 +39,22 @@ const About = () => {
     { 
       icon: <FaWarehouse className="text-4xl" />, 
       title: 'Warehousing', 
-      description: 'State-of-the-art storage facilities with advanced inventory management.' 
+      description: 'Storage facilities in Guangzhou, Yiwu, Shenzhen, Durban, Johannesburg, and Cape Town.' 
     },
     { 
-      icon: <GiDeliveryDrone className="text-4xl" />, 
-      title: 'Last Mile', 
-      description: 'Precision delivery to your customers\' doorstep with real-time tracking.' 
+      icon: <MdOutlineLocalShipping className="text-4xl" />, 
+      title: 'Last Mile Delivery', 
+      description: 'Nationwide delivery network across South Africa.' 
+    },
+    { 
+      icon: <FaShieldAlt className="text-4xl" />, 
+      title: 'Customs Clearance', 
+      description: 'Professional support for smooth import/export processes.' 
     },
     { 
       icon: <FaGlobeAmericas className="text-4xl" />, 
-      title: 'Global Network', 
-      description: 'Worldwide logistics solutions through our extensive partner network.' 
+      title: 'Cross-Bridge Solutions', 
+      description: 'Specialized in China-Africa trade with cultural understanding.' 
     }
   ];
 
@@ -69,7 +69,7 @@ const About = () => {
             transition={{ duration: 0.8 }}
             className="text-4xl md:text-5xl font-bold mb-6"
           >
-            Delivering Excellence Worldwide
+            Bridging China and Africa Through Logistics
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -77,13 +77,13 @@ const About = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-xl md:text-2xl max-w-3xl mx-auto"
           >
-            Your trusted partner in global logistics and supply chain solutions
+            20% faster, 20% cheaper, 20% better service
           </motion.p>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-16 bg-white transform skew-y-1 -mb-8"></div>
       </div>
 
-      {/* Our Story */}
+      {/* Founder's Story */}
       <section className="container mx-auto px-6 py-16">
         <div className="flex flex-col md:flex-row items-center gap-12">
           <motion.div 
@@ -93,15 +93,15 @@ const About = () => {
             viewport={{ once: true }}
             className="md:w-1/2"
           >
-            <h2 className="text-3xl font-bold text-gray-800 mb-6">Our Story</h2>
+            <h2 className="text-3xl font-bold text-gray-800 mb-6">A Chinese Entrepreneur's Journey in South Africa</h2>
             <p className="text-gray-600 mb-4 text-lg">
-              Founded in 2008, SwiftLogix began as a small regional logistics provider with just five trucks and a vision to revolutionize the freight industry.
+              In 2015, Jack Mabaso set off alone on a journey to South Africa. He had no team, no capital — just determination and a one-way ticket to Johannesburg. In his early twenties, driven by curiosity and ambition, Jack set out to make a life for himself in a foreign land.
             </p>
             <p className="text-gray-600 mb-4 text-lg">
-              Today, we've grown into a global logistics powerhouse, serving clients across six continents with innovative supply chain solutions.
+              When he first arrived, Jack didn't jump straight into business. He started from the ground up — working as a translator, a middleman for China–Africa trade, helping South African friends source goods from China, and connecting local youths with opportunities.
             </p>
             <p className="text-gray-600 text-lg">
-              Our journey has been fueled by a commitment to reliability, transparency, and customer satisfaction.
+              Locals fondly began calling him "the guy who can get anything from China." Through this experience, Jack recognized a growing problem: While trade demand was booming, there was a serious lack of fast, safe, and reliable logistics channels.
             </p>
           </motion.div>
           <motion.div 
@@ -111,7 +111,7 @@ const About = () => {
             viewport={{ once: true }}
             className="md:w-1/2 flex justify-center"
           >
-            <div className="bg-blue-100 p-12 rounded-full text-blue-600">
+            <div className="bg-blue-100 p-12 rounded-xl text-blue-600">
               <RiTeamFill className="text-8xl" />
             </div>
           </motion.div>
@@ -151,7 +151,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Our Mission */}
+      {/* Company Story */}
       <section className="container mx-auto px-6 py-16">
         <div className="flex flex-col md:flex-row-reverse items-center gap-12">
           <motion.div 
@@ -161,15 +161,15 @@ const About = () => {
             viewport={{ once: true }}
             className="md:w-1/2"
           >
-            <h2 className="text-3xl font-bold text-gray-800 mb-6">Our Mission</h2>
+            <h2 className="text-3xl font-bold text-gray-800 mb-6">Founding 20percent</h2>
             <p className="text-gray-600 mb-4 text-lg">
-              To simplify global commerce by providing seamless, technology-driven logistics solutions.
+              In 2020, as the global pandemic disrupted logistics worldwide, Jack decided it was time to stop acting as a middleman — and start building a direct shipping route from China to South Africa.
             </p>
             <p className="text-gray-600 mb-4 text-lg">
-              We believe in building partnerships, not just client relationships.
+              The name 20percent represents his challenge to the industry: "I want to be 20% faster, 20% cheaper, and 20% better in service."
             </p>
             <p className="text-gray-600 text-lg">
-              Our team works tirelessly to ensure your goods move efficiently across the globe.
+              From doing everything himself, 20percent has grown into a full-service cross-border logistics company with warehouses in China and South Africa, dedicated freight channels, and a professional team.
             </p>
           </motion.div>
           <motion.div 
@@ -179,8 +179,8 @@ const About = () => {
             viewport={{ once: true }}
             className="md:w-1/2 flex justify-center"
           >
-            <div className="bg-blue-100 p-12 rounded-full text-blue-600">
-              <MdStorage className="text-8xl" />
+            <div className="bg-blue-100 p-12 rounded-xl text-blue-600">
+              <GiCargoShip className="text-8xl" />
             </div>
           </motion.div>
         </div>
@@ -198,7 +198,7 @@ const About = () => {
           >
             <h2 className="text-3xl font-bold text-gray-800 mb-4">Our Comprehensive Services</h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-              End-to-end logistics solutions for modern businesses
+              Specialized China-Africa logistics solutions
             </p>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -232,7 +232,7 @@ const About = () => {
             viewport={{ once: true }}
             className="md:w-1/2 flex justify-center"
           >
-            <div className="bg-blue-100 p-12 rounded-full text-blue-600">
+            <div className="bg-blue-100 p-12 rounded-xl text-blue-600">
               <FaMapMarkedAlt className="text-8xl" />
             </div>
           </motion.div>
@@ -243,16 +243,16 @@ const About = () => {
             viewport={{ once: true }}
             className="md:w-1/2"
           >
-            <h2 className="text-3xl font-bold text-gray-800 mb-6">Why Choose Us?</h2>
+            <h2 className="text-3xl font-bold text-gray-800 mb-6">Our Unique Advantages</h2>
             <div className="space-y-6">
               <div className="flex items-start gap-4">
                 <div className="bg-blue-100 p-3 rounded-full text-blue-600">
                   <FaShieldAlt className="text-xl" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Reliable Network</h3>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Dual-Cultural Understanding</h3>
                   <p className="text-gray-600">
-                    Extensive carrier network for efficient routing.
+                    We speak both Chinese efficiency and South African business culture.
                   </p>
                 </div>
               </div>
@@ -261,9 +261,9 @@ const About = () => {
                   <FaGlobeAmericas className="text-xl" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Global Reach</h3>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Strategic Locations</h3>
                   <p className="text-gray-600">
-                    Capabilities in over 150 countries worldwide.
+                    Warehouses in key Chinese manufacturing hubs and major South African cities.
                   </p>
                 </div>
               </div>
@@ -272,14 +272,39 @@ const About = () => {
                   <FaClock className="text-xl" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Real-time Tracking</h3>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Consistent Weekly Departures</h3>
                   <p className="text-gray-600">
-                    Complete visibility of your shipments 24/7.
+                    Reliable shipping schedules you can count on.
                   </p>
                 </div>
               </div>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Mission Section */}
+      <section className="bg-blue-50 py-16">
+        <div className="container mx-auto px-6 text-center">
+          <motion.h2
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-3xl font-bold text-gray-800 mb-6"
+          >
+            More Than Logistics - Building Bridges
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="text-xl text-gray-600 max-w-4xl mx-auto"
+          >
+            "I'm not just a freight agent. I'm the bridge of trust between two worlds. At 20percent, we're delivering opportunities, dreams, and the power to transform lives through reliable China-Africa logistics."
+          </motion.p>
+          <p className="text-lg font-semibold mt-4 text-gray-700">- Jack Mabaso, Founder</p>
         </div>
       </section>
 
@@ -292,16 +317,16 @@ const About = () => {
           viewport={{ once: true }}
           className="container mx-auto px-6"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Supply Chain?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Simplify Your China-Africa Shipping?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Partner with us for logistics solutions that drive your business forward.
+            Experience the 20percent difference in cross-border logistics.
           </p>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="bg-white text-blue-800 px-8 py-4 rounded-lg font-bold text-lg shadow-lg hover:shadow-xl transition-all"
           >
-            Get a Free Quote
+            Get Your Free Quote
           </motion.button>
         </motion.div>
       </section>

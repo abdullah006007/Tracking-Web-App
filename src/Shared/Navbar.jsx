@@ -29,7 +29,7 @@ const Navbar = () => {
 
     const navItems = <>
         <li className='font-bold'> <NavLink to="/">HOME</NavLink> </li>
-        <li className='font-bold'> <NavLink to="/sendparcel">SEND PARCEL</NavLink> </li>
+        {/* <li className='font-bold'> <NavLink to="/sendparcel">SEND PARCEL</NavLink> </li> */}
         <li className='font-bold'> <NavLink to="/coverage">COVERAGE</NavLink> </li>
         {user && <li className='font-bold'> <NavLink to="/dashboard">DASHBOARD</NavLink> </li>}
         <li className='font-bold'> <NavLink to="track-parcel">TRACK PARCEL</NavLink> </li>
