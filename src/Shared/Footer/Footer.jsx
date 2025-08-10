@@ -13,9 +13,9 @@ const Footer = () => {
 
                     
                     <p className="font-bold">
-                        ACME Industries Ltd.
+                        20 percent
                         <br />
-                        Providing reliable tech since 1992
+                        Providing reliable Shipping
                     </p>
                     <p>Copyright © {new Date().getFullYear()} - All right reserved</p>
                 </aside>
