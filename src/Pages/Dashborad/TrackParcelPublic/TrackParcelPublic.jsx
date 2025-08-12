@@ -10,7 +10,8 @@ import {
   FaBoxOpen,
   FaBarcode,
   FaUser,
-  FaClock
+  FaClock,
+  FaExchangeAlt
 } from 'react-icons/fa';
 import { GiDeliveryDrone } from 'react-icons/gi';
 import { MdSecurity, MdUpdate, MdOutlineAssignmentTurnedIn } from 'react-icons/md';
@@ -20,151 +21,258 @@ import { motion } from 'framer-motion';
 import useAxiosPublic from '../../../Hooks/useAxiosPublic';
 import Spinner from '../../../Shared/Spinner';
 
+// Define status configurations outside the component so they can be shared
+const allStatuses = [
+  { value: "order_confirmed", label: "Order Confirmed", icon: <BsCheck2Circle className="text-white" />, color: "bg-blue-500" },
+  { value: "quality_inspection", label: "Quality Inspection", icon: <FaSearch className="text-white" />, color: "bg-purple-500" },
+  { value: "passed_inspection", label: "Passed Inspection", icon: <FaCheck className="text-white" />, color: "bg-green-500" },
+  { value: "packed_for_warehouse", label: "Packed for Warehouse", icon: <FaBoxOpen className="text-white" />, color: "bg-yellow-500" },
+  { value: "arrived_at_warehouse", label: "At Warehouse", icon: <FaWarehouse className="text-white" />, color: "bg-orange-500" },
+  { value: "awaiting_departure", label: "Awaiting Departure", icon: <BsClock className="text-white" />, color: "bg-amber-500" },
+  { value: "international_shipping", label: "International Shipping", icon: <GiDeliveryDrone className="text-white" />, color: "bg-sky-500" },
+  { value: "arrived_at_customs", label: "At Customs", icon: <MdSecurity className="text-white" />, color: "bg-indigo-500" },
+  { value: "clearance_finished", label: "Clearance Finished", icon: <MdOutlineAssignmentTurnedIn className="text-white" />, color: "bg-teal-500" },
+  { value: "arrived_at_local_warehouse", label: "At Local Warehouse", icon: <FaWarehouse className="text-white" />, color: "bg-cyan-500" },
+  { value: "local_quality_check", label: "Quality Check", icon: <FaCheck className="text-white" />, color: "bg-emerald-500" },
+  { value: "awaiting_courier", label: "Awaiting Courier", icon: <FaClock className="text-white" />, color: "bg-indigo-500", description: "Waiting for courier pickup (2-3 days)" },
+];
+
+const courierStatusConfig = {
+  "submitted": {
+    label: "Order Received",
+    icon: <FaCheck className="text-white" />,
+    color: "bg-gray-500",
+    description: "Order has been received by courier"
+  },
+  "collected": {
+    label: "Picked Up",
+    icon: <FaTruck className="text-white" />,
+    color: "bg-blue-500",
+    description: "Package has been collected"
+  },
+  "in-transit": {
+    label: "In Transit",
+    icon: <GiDeliveryDrone className="text-white" />,
+    color: "bg-yellow-500",
+    description: "Package is on the way"
+  },
+  "at-destination-hub": {
+    label: "At Facility",
+    icon: <FaWarehouse className="text-white" />,
+    color: "bg-purple-500",
+    description: "At local distribution center"
+  },
+  "out-for-delivery": {
+    label: "Out for Delivery",
+    icon: <FaTruck className="text-white" />,
+    color: "bg-orange-500",
+    description: "With delivery driver"
+  },
+  "delivered": {
+    label: "Delivered",
+    icon: <BsCheck2Circle className="text-white" />,
+    color: "bg-green-500",
+    description: "Successfully delivered"
+  }
+};
+
+const CourierTrackingSection = ({ 
+  shipment, 
+  parcel, 
+  formatDate, 
+  formatCourierTrackingEvents, 
+  recipientName, 
+  isDirectTracking = false 
+}) => {
+  return (
+    <div className="ml-4 md:ml-20 mb-10">
+      <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+        {/* Status Progress Tracker */}
+        <div className="mb-8">
+          <div className="relative">
+            {/* Progress Line - Hidden on mobile for better responsiveness */}
+            <div className="absolute left-0 right-0 top-1/2 h-1 bg-gray-200 -translate-y-1/2 hidden md:block"></div>
+            
+            {/* Status Indicators - Grid for responsiveness: 3 cols mobile (2 rows), 6 cols desktop (1 row) */}
+            <div className="relative grid grid-cols-3 md:grid-cols-6 gap-4 md:gap-2 justify-items-center">
+              {Object.entries({
+                "submitted": courierStatusConfig.submitted,
+                "collected": courierStatusConfig.collected,
+                "in-transit": courierStatusConfig["in-transit"],
+                "at-destination-hub": courierStatusConfig["at-destination-hub"],
+                "out-for-delivery": courierStatusConfig["out-for-delivery"],
+                "delivered": courierStatusConfig.delivered
+              }).map(([statusKey, statusData], index) => {
+                const isActive = shipment?.status === statusKey;
+                const isCompleted = shipment?.status === 'delivered' || 
+                                    (shipment?.status === 'out-for-delivery' && index < 5) ||
+                                    (shipment?.status === 'at-destination-hub' && index < 4) ||
+                                    (shipment?.status === 'in-transit' && index < 3) ||
+                                    (shipment?.status === 'collected' && index < 2) ||
+                                    (shipment?.status === 'submitted' && index < 1);
+
+                return (
+                  <div key={statusKey} className="flex flex-col items-center z-10 w-full">
+                    <motion.div
+                      animate={isActive ? {
+                        scale: [1, 1.2, 1],
+                        boxShadow: ["0 0 0 0 rgba(99, 102, 241, 0.7)", "0 0 0 10px rgba(99, 102, 241, 0)", "0 0 0 0 rgba(99, 102, 241, 0)"]
+                      } : {}}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
+                      className={`h-10 w-10 rounded-full flex items-center justify-center ${isActive ? 'ring-4 ring-indigo-300 ' + statusData.color : isCompleted ? statusData.color : 'bg-gray-300'} mb-2`}
+                    >
+                      {statusData.icon}
+                    </motion.div>
+                    <p className={`text-xs font-medium text-center ${isActive ? 'text-indigo-600 font-bold' : isCompleted ? 'text-gray-800' : 'text-gray-400'}`}>
+                      {statusData.label}
+                    </p>
+                    {isActive && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="absolute top-15 mt-2 px-2 py-1 text-indigo-800 text-xs rounded-full whitespace-nowrap"
+                      >
+                        
+                      </motion.div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Current Status Description */}
+          {shipment?.status && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-6 text-center"
+            >
+              <p className="text-lg font-medium text-gray-800">
+                {courierStatusConfig[shipment.status]?.label || shipment.status}
+              </p>
+              <p className="text-gray-600 mt-1">
+                {courierStatusConfig[shipment.status]?.description || 'Package is in transit'}
+              </p>
+              {shipment.status === 'awaiting_courier' && (
+                <p className="text-sm text-indigo-600 mt-2">
+                  <FaClock className="inline mr-1" /> Expected to be received within 2-3 days
+                </p>
+              )}
+            </motion.div>
+          )}
+        </div>
+
+        {/* Recipient Information */}
+        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
+          <div className="flex items-center">
+            <div className="p-2 rounded-full bg-blue-100 text-blue-600 mr-3">
+              <FaUser size={16} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Recipient</p>
+              <p className="font-medium text-gray-800">{recipientName}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Tracking Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <p className="text-sm text-gray-500 mb-1">Tracking Number</p>
+            <p className="font-medium text-gray-800">{parcel.CourierGuyCode}</p>
+          </div>
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <p className="text-sm text-gray-500 mb-1">Last Location</p>
+            <p className="font-medium text-gray-800">
+              {shipment?.tracking_events?.[0]?.source || 'N/A'}
+            </p>
+          </div>
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <p className="text-sm text-gray-500 mb-1">Estimated Delivery</p>
+            <p className="font-medium text-gray-800">
+              {shipment?.estimated_delivery_date ? formatDate(shipment.estimated_delivery_date) : 'N/A'}
+            </p>
+          </div>
+        </div>
+
+        {/* Tracking History */}
+        <div className="mt-6">
+          <h4 className="font-semibold text-gray-800 mb-4 text-lg flex items-center">
+            <MdUpdate className="mr-2" /> Tracking History
+          </h4>
+          <div className="space-y-3">
+            {formatCourierTrackingEvents().length > 0 ? (
+              formatCourierTrackingEvents().map((event, index) => {
+                const statusConfig = courierStatusConfig[event.status] || {};
+                const isCurrent = index === 0;
+                
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className={`p-4 rounded-lg border-l-4 ${isCurrent ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 bg-gray-50'}`}
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
+                      <div className="mb-2 sm:mb-0">
+                        <div className="flex items-center">
+                          <div className={`p-1 rounded-full ${statusConfig.color || 'bg-gray-300'} mr-2`}>
+                            {statusConfig.icon || <FaTruck className="text-white text-xs" />}
+                          </div>
+                          <p className={`font-medium ${isCurrent ? 'text-indigo-800' : 'text-gray-800'}`}>
+                            {courierStatusConfig[event.status]?.label || event.status?.replace(/-/g, ' ')}
+                          </p>
+                        </div>
+                        {event.message && (
+                          <p className="text-sm text-gray-600 mt-1">{event.message}</p>
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-500 whitespace-nowrap sm:ml-4 sm:text-right">
+                        {formatDate(event.date)}
+                      </p>
+                    </div>
+                    {event.location && (
+                      <div className="flex items-center text-sm text-gray-500 mt-2">
+                        <FaMapMarkerAlt className="mr-2 text-gray-400" /> 
+                        <span>{event.location}</span>
+                      </div>
+                    )}
+                    {isCurrent && (
+                      <div className="mt-2 text-xs text-indigo-600 font-medium flex items-center">
+                        <RiLoader4Fill className="animate-spin mr-1" /> CURRENT STATUS
+                      </div>
+                    )}
+                  </motion.div>
+                );
+              })
+            ) : (
+              <div className="text-center py-6 text-gray-500 bg-gray-50 rounded-lg">
+                <p>No tracking events available yet.</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <p className="text-xs text-gray-400 mt-6 text-center">
+          Tracking information provided by ShipLogic API
+        </p>
+      </div>
+    </div>
+  );
+};
+
 const TrackParcelPublic = () => {
   const axiosPublic = useAxiosPublic();
   const [trackingNumber, setTrackingNumber] = useState('');
   const [submittedTracking, setSubmittedTracking] = useState('');
   const [lastUpdated, setLastUpdated] = useState('');
+  const [isCourierGuyTracking, setIsCourierGuyTracking] = useState(false);
 
   // ShipLogic API bearer token
   const BEARER_TOKEN = "e625e493e8b542eeafdf82a60212c8a6";
-
-  // Status configuration
-  const allStatuses = [
-    { value: "order_confirmed", label: "Order Confirmed", icon: <BsCheck2Circle className="text-white" />, color: "bg-blue-500" },
-    { value: "quality_inspection", label: "Quality Inspection", icon: <FaSearch className="text-white" />, color: "bg-purple-500" },
-    { value: "passed_inspection", label: "Passed Inspection", icon: <FaCheck className="text-white" />, color: "bg-green-500" },
-    { value: "packed_for_warehouse", label: "Packed for Warehouse", icon: <FaBoxOpen className="text-white" />, color: "bg-yellow-500" },
-    { value: "arrived_at_warehouse", label: "At Warehouse", icon: <FaWarehouse className="text-white" />, color: "bg-orange-500" },
-    { value: "awaiting_departure", label: "Awaiting Departure", icon: <BsClock className="text-white" />, color: "bg-amber-500" },
-    { value: "international_shipping", label: "International Shipping", icon: <GiDeliveryDrone className="text-white" />, color: "bg-sky-500" },
-    { value: "arrived_at_customs", label: "At Customs", icon: <MdSecurity className="text-white" />, color: "bg-indigo-500" },
-    { value: "clearance_finished", label: "Clearance Finished", icon: <MdOutlineAssignmentTurnedIn className="text-white" />, color: "bg-teal-500" },
-    { value: "arrived_at_local_warehouse", label: "At Local Warehouse", icon: <FaWarehouse className="text-white" />, color: "bg-cyan-500" },
-    { value: "local_quality_check", label: "Quality Check", icon: <FaCheck className="text-white" />, color: "bg-emerald-500" },
-    { value: "awaiting_courier", label: "Awaiting Courier", icon: <FaClock className="text-white" />, color: "bg-indigo-500", description: "Waiting for courier pickup (2-3 days)" },
-  ];
-
-  // Enhanced Courier Guy status configuration
-  const courierStatusConfig = {
-    "submitted": {
-      label: "Order Received",
-      icon: <FaCheck className="text-white" />,
-      color: "bg-gray-500",
-      description: "Order has been received by courier"
-    },
-    "collected": {
-      label: "Picked Up",
-      icon: <FaTruck className="text-white" />,
-      color: "bg-blue-500",
-      description: "Package has been collected"
-    },
-    "in-transit": {
-      label: "In Transit",
-      icon: <GiDeliveryDrone className="text-white" />,
-      color: "bg-yellow-500",
-      description: "Package is on the way"
-    },
-    "at-destination-hub": {
-      label: "At Facility",
-      icon: <FaWarehouse className="text-white" />,
-      color: "bg-purple-500",
-      description: "At local distribution center"
-    },
-    "out-for-delivery": {
-      label: "Out for Delivery",
-      icon: <FaTruck className="text-white" />,
-      color: "bg-orange-500",
-      description: "With delivery driver"
-    },
-    "delivered": {
-      label: "Delivered",
-      icon: <BsCheck2Circle className="text-white" />,
-      color: "bg-green-500",
-      description: "Successfully delivered"
-    }
-  };
-
-  const courierStatusDisplayNames = {
-    ...courierStatusConfig,
-    "awaiting_courier": {
-      label: "Awaiting Courier",
-      description: "Waiting for courier pickup (2-3 days)"
-    }
-  };
-
-  // Fetch parcel info from backend
-  const { data: parcelResponse, isLoading: isParcelLoading, isError: isParcelError, error: parcelError, refetch } = useQuery({
-    queryKey: ['trackParcelPublic', submittedTracking],
-    queryFn: async () => {
-      if (!submittedTracking) return null;
-      const res = await axiosPublic.get(`/parcels/tracking/${submittedTracking}`);
-      if (!res.data.success) {
-        throw new Error(res.data.message || 'Failed to fetch tracking information');
-      }
-      setLastUpdated(new Date().toLocaleTimeString());
-      return res.data;
-    },
-    enabled: !!submittedTracking,
-    refetchInterval: 30000,
-    retry: false,
-    staleTime: 10000
-  });
-
-  const parcel = parcelResponse?.data;
-
-  // Helper functions
-  const getCurrentStatusIndex = () => {
-    if (!parcel?.deliveryStatus) return -1;
-    const lastStatus = parcel.deliveryStatus[parcel.deliveryStatus.length - 1]?.status;
-    return allStatuses.findIndex(s => s.value === lastStatus);
-  };
-
-  const shouldShowCourierTrackingSection = () => {
-    if (!parcel) return false;
-    const currentStatus = parcel.deliveryStatus[parcel.deliveryStatus.length - 1]?.status;
-    return ['awaiting_courier', 'in_transit', 'delivered'].includes(currentStatus) && !!parcel.CourierGuyCode;
-  };
-
-  // Fetch Courier Guy tracking info from ShipLogic API
-  const { data: courierResponse, isLoading: isCourierLoading } = useQuery({
-    queryKey: ['courierTracking', parcel?.CourierGuyCode],
-    queryFn: async () => {
-      if (!parcel?.CourierGuyCode) return null;
-      const response = await fetch(`https://api.shiplogic.com/v2/tracking/shipments?tracking_reference=${encodeURIComponent(parcel.CourierGuyCode)}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${BEARER_TOKEN}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Unable to track package');
-      }
-      return await response.json();
-    },
-    enabled: !!parcel?.CourierGuyCode && shouldShowCourierTrackingSection(),
-    retry: false,
-    staleTime: 10000
-  });
-
-  const shipment = courierResponse?.shipments?.[0];
-  const recipientName = shipment?.recipient_name || 'Not available';
-
-  useEffect(() => {
-    if (submittedTracking) {
-      const interval = setInterval(() => refetch(), 30000);
-      return () => clearInterval(interval);
-    }
-  }, [submittedTracking, refetch]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (trackingNumber.trim()) {
-      setSubmittedTracking(trackingNumber.trim());
-    }
-  };
 
   // Format dates for display
   const formatDate = (dateString) => {
@@ -213,6 +321,117 @@ const TrackParcelPublic = () => {
       }));
   };
 
+  // Function to fetch Courier Guy tracking data
+  const fetchCourierGuyTracking = async (trackingNumber) => {
+    try {
+      const response = await fetch(`https://api.shiplogic.com/v2/tracking/shipments?tracking_reference=${encodeURIComponent(trackingNumber)}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${BEARER_TOKEN}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Unable to track package');
+      }
+      
+      const data = await response.json();
+      if (data?.shipments?.length > 0) {
+        return data;
+      }
+      throw new Error('No shipment found');
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  // Helper functions
+  const getCurrentStatusIndex = (parcel) => {
+    if (!parcel?.deliveryStatus) return -1;
+    const lastStatus = parcel.deliveryStatus[parcel.deliveryStatus.length - 1]?.status;
+    return allStatuses.findIndex(s => s.value === lastStatus);
+  };
+
+  const shouldShowCourierTrackingSection = (parcel) => {
+    if (!parcel) return false;
+    if (parcel.isCourierGuyDirect) return true;
+    
+    const currentStatus = parcel.deliveryStatus[parcel.deliveryStatus.length - 1]?.status;
+    return ['awaiting_courier', 'in_transit', 'delivered'].includes(currentStatus) && !!parcel.CourierGuyCode;
+  };
+
+  // Fetch parcel info from backend
+  const { data: parcelResponse, isLoading: isParcelLoading, isError: isParcelError, error: parcelError, refetch } = useQuery({
+    queryKey: ['trackParcelPublic', submittedTracking],
+    queryFn: async () => {
+      if (!submittedTracking) return null;
+      
+      // First try to fetch as Courier Guy tracking number
+      try {
+        const courierResponse = await fetchCourierGuyTracking(submittedTracking);
+        if (courierResponse) {
+          setIsCourierGuyTracking(true);
+          return {
+            success: true,
+            data: {
+              isCourierGuyDirect: true,
+              CourierGuyCode: submittedTracking,
+              courierData: courierResponse
+            }
+          };
+        }
+      } catch (e) {
+        console.log("Not a Courier Guy tracking number, trying regular tracking");
+      }
+      
+      // If not Courier Guy tracking, try regular tracking
+      setIsCourierGuyTracking(false);
+      const res = await axiosPublic.get(`/parcels/tracking/${submittedTracking}`);
+      if (!res.data.success) {
+        throw new Error(res.data.message || 'Failed to fetch tracking information');
+      }
+      setLastUpdated(new Date().toLocaleTimeString());
+      return res.data;
+    },
+    enabled: !!submittedTracking,
+    refetchInterval: 30000,
+    retry: false,
+    staleTime: 10000
+  });
+
+  const parcel = parcelResponse?.data;
+
+  // Fetch Courier Guy tracking info from ShipLogic API
+  const { data: courierResponse, isLoading: isCourierLoading } = useQuery({
+    queryKey: ['courierTracking', parcel?.CourierGuyCode],
+    queryFn: async () => {
+      if (!parcel?.CourierGuyCode) return null;
+      return await fetchCourierGuyTracking(parcel.CourierGuyCode);
+    },
+    enabled: !!parcel?.CourierGuyCode && !parcel?.isCourierGuyDirect && shouldShowCourierTrackingSection(parcel),
+    retry: false,
+    staleTime: 10000
+  });
+
+  const shipment = parcel?.isCourierGuyDirect ? parcel.courierData?.shipments?.[0] : courierResponse?.shipments?.[0];
+  const recipientName = shipment?.recipient_name || 'Not available';
+
+  useEffect(() => {
+    if (submittedTracking) {
+      const interval = setInterval(() => refetch(), 30000);
+      return () => clearInterval(interval);
+    }
+  }, [submittedTracking, refetch]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (trackingNumber.trim()) {
+      setSubmittedTracking(trackingNumber.trim());
+    }
+  };
+
   if (isParcelLoading || isCourierLoading) return <Spinner />;
 
   return (
@@ -236,7 +455,7 @@ const TrackParcelPublic = () => {
               value={trackingNumber}
               onChange={(e) => setTrackingNumber(e.target.value)}
               className="w-full pl-10 pr-4 py-4 border-0 rounded-lg bg-white/90 focus:ring-2 focus:ring-white focus:bg-white transition-all duration-300 placeholder-blue-300 text-lg"
-              placeholder="Enter your tracking number"
+              placeholder="Enter tracking or Courier Guy code"
               required
             />
           </div>
@@ -249,6 +468,10 @@ const TrackParcelPublic = () => {
             <GiDeliveryDrone size={24} /> Track Package
           </motion.button>
         </form>
+        <div className="mt-4 flex items-center text-blue-100 text-sm">
+          <FaExchangeAlt className="mr-2" />
+          <span>You can enter either our tracking number or direct Courier Guy tracking code</span>
+        </div>
       </motion.div>
 
       {/* Error Message */}
@@ -278,10 +501,15 @@ const TrackParcelPublic = () => {
           <div className="p-8 border-b bg-gray-50">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-3">Shipment Details</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                  {parcel.isCourierGuyDirect ? 'Courier Guy Shipment' : 'Shipment Details'}
+                </h2>
                 <div className="flex flex-wrap items-center gap-4">
                   <p className="text-gray-600">
-                    Tracking ID: <span className="font-mono font-semibold bg-blue-50 px-3 py-1.5 rounded-md">{parcel.trackingNumber}</span>
+                    {parcel.isCourierGuyDirect ? 'Courier Guy Code' : 'Tracking ID'}: 
+                    <span className="font-mono font-semibold bg-blue-50 px-3 py-1.5 rounded-md ml-2">
+                      {parcel.isCourierGuyDirect ? parcel.CourierGuyCode : parcel.trackingNumber}
+                    </span>
                   </p>
                   {parcel.estimatedDelivery && (
                     <p className="text-gray-600">
@@ -290,11 +518,23 @@ const TrackParcelPublic = () => {
                       </span>
                     </p>
                   )}
+                  {shipment?.estimated_delivery_date && (
+                    <p className="text-gray-600">
+                      Est. Delivery: <span className="font-semibold">
+                        {formatDate(shipment.estimated_delivery_date)}
+                      </span>
+                    </p>
+                  )}
                   <p className="text-sm text-gray-500 flex items-center">
                     <RiLoader4Fill className="animate-spin mr-1" /> Last updated: {lastUpdated}
                   </p>
                 </div>
               </div>
+              {parcel.isCourierGuyDirect && (
+                <div className="mt-4 md:mt-0 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium flex items-center">
+                  <FaTruck className="mr-2" /> Direct Courier Guy Tracking
+                </div>
+              )}
             </div>
 
             {/* Delivery Information */}
@@ -327,7 +567,7 @@ const TrackParcelPublic = () => {
                     </div>
                   </div>
                 </div>
-                {shouldShowCourierTrackingSection() && (
+                {(shouldShowCourierTrackingSection(parcel) || parcel.isCourierGuyDirect) && (
                   <div className="bg-white p-5 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
                     <div className="flex items-center">
                       <div className="p-3 rounded-full bg-orange-100 text-orange-600 mr-4">
@@ -345,264 +585,118 @@ const TrackParcelPublic = () => {
           </div>
 
           {/* Delivery Status Timeline */}
-          <div className="p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-8">Delivery Progress</h2>
-            <div className="relative">
-              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-              <div className="space-y-10">
-                {allStatuses.map((status, index) => {
-                  const isCompleted = index < getCurrentStatusIndex();
-                  const isCurrent = index === getCurrentStatusIndex();
-                  const hasOccurred = parcel.deliveryStatus?.some(s => s.status === status.value);
-                  const isAwaitingCourier = status.value === 'awaiting_courier';
+          {!parcel.isCourierGuyDirect && (
+            <div className="p-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-8">Delivery Progress</h2>
+              <div className="relative">
+                <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                <div className="space-y-10">
+                  {allStatuses.map((status, index) => {
+                    const isCompleted = index < getCurrentStatusIndex(parcel);
+                    const isCurrent = index === getCurrentStatusIndex(parcel);
+                    const hasOccurred = parcel.deliveryStatus?.some(s => s.status === status.value);
+                    const isAwaitingCourier = status.value === 'awaiting_courier';
 
-                  return (
-                    <div key={status.value}>
-                      <motion.div 
-                        initial={{ opacity: 0, x: -30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                        className="flex items-start"
-                      >
-                        <div className="relative z-10">
-                          {isCurrent ? (
-                            <motion.div
-                              animate={{ scale: [1, 1.1, 1], boxShadow: ["0 0 0 0 rgba(59, 130, 246, 0.7)", "0 0 0 10px rgba(59, 130, 246, 0)", "0 0 0 0 rgba(59, 130, 246, 0)"] }}
-                              transition={{ duration: 1.5, ease: "easeOut", repeat: Infinity, repeatDelay: 0.5 }}
-                              className={`flex-shrink-0 h-12 w-12 rounded-full ${status.color} flex items-center justify-center text-white shadow-lg`}
-                            >
-                              {status.icon}
-                            </motion.div>
-                          ) : isCompleted ? (
-                            <motion.div
-                              whileHover={{ scale: 1.1 }}
-                              className={`flex-shrink-0 h-12 w-12 rounded-full ${status.color} flex items-center justify-center text-white shadow-lg`}
-                            >
-                              {status.icon}
-                            </motion.div>
-                          ) : (
-                            <div className="flex-shrink-0 h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 shadow-lg">
-                              <BsClock className="text-gray-500" size={18} />
-                            </div>
-                          )}
-                        </div>
-                        <motion.div whileHover={{ x: 5 }} className="ml-8 pb-10">
-                          <div className="flex items-center">
-                            <p className={`text-lg font-semibold ${isCurrent ? 'text-blue-600' : isCompleted ? 'text-gray-800' : 'text-gray-500'}`}>
-                              {status.label}
-                            </p>
-                            {isCurrent && (
-                              <motion.span
-                                animate={{ opacity: [0.5, 1, 0.5] }}
-                                transition={{ duration: 1.5, repeat: Infinity }}
-                                className="ml-3 text-xs bg-blue-100 text-blue-800 px-3 py-1 rounded-full"
+                    return (
+                      <div key={status.value}>
+                        <motion.div 
+                          initial={{ opacity: 0, x: -30 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.5, delay: index * 0.1 }}
+                          className="flex items-start"
+                        >
+                          <div className="relative z-10">
+                            {isCurrent ? (
+                              <motion.div
+                                animate={{ scale: [1, 1.1, 1], boxShadow: ["0 0 0 0 rgba(59, 130, 246, 0.7)", "0 0 0 10px rgba(59, 130, 246, 0)", "0 0 0 0 rgba(59, 130, 246, 0)"] }}
+                                transition={{ duration: 1.5, ease: "easeOut", repeat: Infinity, repeatDelay: 0.5 }}
+                                className={`flex-shrink-0 h-12 w-12 rounded-full ${status.color} flex items-center justify-center text-white shadow-lg`}
                               >
-                                Active
-                              </motion.span>
+                                {status.icon}
+                              </motion.div>
+                            ) : isCompleted ? (
+                              <motion.div
+                                whileHover={{ scale: 1.1 }}
+                                className={`flex-shrink-0 h-12 w-12 rounded-full ${status.color} flex items-center justify-center text-white shadow-lg`}
+                              >
+                                {status.icon}
+                              </motion.div>
+                            ) : (
+                              <div className="flex-shrink-0 h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 shadow-lg">
+                                <BsClock className="text-gray-500" size={18} />
+                              </div>
                             )}
                           </div>
-                          {hasOccurred ? (
-                            <>
-                              <p className="text-gray-600 mt-2">
-                                {parcel.deliveryStatus.find(s => s.status === status.value)?.details || `Package ${status.label.toLowerCase()}`}
+                          <motion.div whileHover={{ x: 5 }} className="ml-8 pb-10">
+                            <div className="flex items-center">
+                              <p className={`text-lg font-semibold ${isCurrent ? 'text-blue-600' : isCompleted ? 'text-gray-800' : 'text-gray-500'}`}>
+                                {status.label}
                               </p>
-                              <p className="text-sm text-gray-400 mt-3">
-                                {new Date(parcel.deliveryStatus.find(s => s.status === status.value)?.date).toLocaleString('en-US', {
-                                  weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
-                                })}
-                              </p>
-                              {parcel.deliveryStatus.find(s => s.status === status.value)?.location && (
-                                <div className="flex items-center text-sm text-gray-500 mt-2">
-                                  <FaMapMarkerAlt className="mr-2 text-gray-400" /> {parcel.deliveryStatus.find(s => s.status === status.value)?.location}
-                                </div>
-                              )}
-                            </>
-                          ) : (
-                            <p className="text-gray-400 mt-2">
-                              {isCurrent ? 'This step is currently in progress' : `This step will occur next`}
-                            </p>
-                          )}
-                        </motion.div>
-                      </motion.div>
-
-                      {/* Courier Tracking Section - Show right after Awaiting Courier status */}
-                      {isAwaitingCourier && shouldShowCourierTrackingSection() && (
-                        <div className="ml-20 mb-10">
-                          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                            {/* Status Progress Tracker */}
-                            <div className="mb-8">
-                              <div className="relative">
-                                {/* Progress Line */}
-                                <div className="absolute left-0 right-0 top-1/2 h-1 bg-gray-200 -translate-y-1/2"></div>
-                                
-                                {/* Status Indicators */}
-                                <div className="relative flex justify-between">
-                                  {Object.entries(courierStatusConfig).map(([statusKey, statusData], index) => {
-                                    const isActive = shipment?.status === statusKey;
-                                    const isCompleted = shipment?.status === 'delivered' || 
-                                                      (shipment?.status === 'out-for-delivery' && index < 5) ||
-                                                      (shipment?.status === 'at-destination-hub' && index < 4) ||
-                                                      (shipment?.status === 'in-transit' && index < 3) ||
-                                                      (shipment?.status === 'collected' && index < 2) ||
-                                                      (shipment?.status === 'submitted' && index < 1);
-
-                                    return (
-                                      <div key={statusKey} className="flex flex-col items-center z-10">
-                                        <motion.div
-                                          animate={isActive ? {
-                                            scale: [1, 1.2, 1],
-                                            boxShadow: ["0 0 0 0 rgba(99, 102, 241, 0.7)", "0 0 0 10px rgba(99, 102, 241, 0)", "0 0 0 0 rgba(99, 102, 241, 0)"]
-                                          } : {}}
-                                          transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
-                                          className={`h-10 w-10 rounded-full flex items-center justify-center ${isActive ? 'ring-4 ring-indigo-300 ' + statusData.color : isCompleted ? statusData.color : 'bg-gray-300'} mb-2`}
-                                        >
-                                          {statusData.icon}
-                                        </motion.div>
-                                        <p className={`text-xs font-medium text-center ${isActive ? 'text-indigo-600 font-bold' : isCompleted ? 'text-gray-800' : 'text-gray-400'}`}>
-                                          {statusData.label}
-                                        </p>
-                                        {isActive && (
-                                          <motion.div
-                                            initial={{ opacity: 0, y: -10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            className="absolute top-12 mt-2 px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded-full whitespace-nowrap"
-                                          >
-                                            Current Status
-                                          </motion.div>
-                                        )}
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-
-                              {/* Current Status Description */}
-                              {shipment?.status && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: 20 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ delay: 0.3 }}
-                                  className="mt-6 text-center"
+                              {isCurrent && (
+                                <motion.span
+                                  animate={{ opacity: [0.5, 1, 0.5] }}
+                                  transition={{ duration: 1.5, repeat: Infinity }}
+                                  className="ml-3 text-xs bg-blue-100 text-blue-800 px-3 py-1 rounded-full"
                                 >
-                                  <p className="text-lg font-medium text-gray-800">
-                                    {courierStatusConfig[shipment.status]?.label || shipment.status}
-                                  </p>
-                                  <p className="text-gray-600 mt-1">
-                                    {courierStatusConfig[shipment.status]?.description || 'Package is in transit'}
-                                  </p>
-                                  {shipment.status === 'awaiting_courier' && (
-                                    <p className="text-sm text-indigo-600 mt-2">
-                                      <FaClock className="inline mr-1" /> Expected to be received within 2-3 days
-                                    </p>
-                                  )}
-                                </motion.div>
+                                  Active
+                                </motion.span>
                               )}
                             </div>
-
-                            {/* Recipient Information */}
-                            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
-                              <div className="flex items-center">
-                                <div className="p-2 rounded-full bg-blue-100 text-blue-600 mr-3">
-                                  <FaUser size={16} />
-                                </div>
-                                <div>
-                                  <p className="text-sm text-gray-500">Recipient</p>
-                                  <p className="font-medium text-gray-800">{recipientName}</p>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Tracking Summary */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                                <p className="text-sm text-gray-500 mb-1">Tracking Number</p>
-                                <p className="font-medium text-gray-800">{parcel.CourierGuyCode}</p>
-                              </div>
-                              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                                <p className="text-sm text-gray-500 mb-1">Last Location</p>
-                                <p className="font-medium text-gray-800">
-                                  {shipment?.tracking_events?.[0]?.source || 'N/A'}
+                            {hasOccurred ? (
+                              <>
+                                <p className="text-gray-600 mt-2">
+                                  {parcel.deliveryStatus.find(s => s.status === status.value)?.details || `Package ${status.label.toLowerCase()}`}
                                 </p>
-                              </div>
-                              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                                <p className="text-sm text-gray-500 mb-1">Estimated Delivery</p>
-                                <p className="font-medium text-gray-800">
-                                  {shipment?.estimated_delivery_date ? formatDate(shipment.estimated_delivery_date) : 'N/A'}
+                                <p className="text-sm text-gray-400 mt-3">
+                                  {new Date(parcel.deliveryStatus.find(s => s.status === status.value)?.date).toLocaleString('en-US', {
+                                    weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+                                  })}
                                 </p>
-                              </div>
-                            </div>
-
-                            {/* Tracking History */}
-                            <div className="mt-6">
-                              <h4 className="font-semibold text-gray-800 mb-4 text-lg flex items-center">
-                                <MdUpdate className="mr-2" /> Tracking History
-                              </h4>
-                              <div className="space-y-3">
-                                {formatCourierTrackingEvents().length > 0 ? (
-                                  formatCourierTrackingEvents().map((event, index) => {
-                                    const statusConfig = courierStatusConfig[event.status] || {};
-                                    const isCurrent = index === 0;
-                                    
-                                    return (
-                                      <motion.div
-                                        key={index}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: index * 0.1 }}
-                                        className={`p-4 rounded-lg border-l-4 ${isCurrent ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 bg-gray-50'}`}
-                                      >
-                                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
-                                          <div className="mb-2 sm:mb-0">
-                                            <div className="flex items-center">
-                                              <div className={`p-1 rounded-full ${statusConfig.color || 'bg-gray-300'} mr-2`}>
-                                                {statusConfig.icon || <FaTruck className="text-white text-xs" />}
-                                              </div>
-                                              <p className={`font-medium ${isCurrent ? 'text-indigo-800' : 'text-gray-800'}`}>
-                                                {courierStatusConfig[event.status]?.label || event.status?.replace(/-/g, ' ')}
-                                              </p>
-                                            </div>
-                                            {event.message && (
-                                              <p className="text-sm text-gray-600 mt-1">{event.message}</p>
-                                            )}
-                                          </div>
-                                          <p className="text-sm text-gray-500 whitespace-nowrap sm:ml-4 sm:text-right">
-                                            {formatDate(event.date)}
-                                          </p>
-                                        </div>
-                                        {event.location && (
-                                          <div className="flex items-center text-sm text-gray-500 mt-2">
-                                            <FaMapMarkerAlt className="mr-2 text-gray-400" /> 
-                                            <span>{event.location}</span>
-                                          </div>
-                                        )}
-                                        {isCurrent && (
-                                          <div className="mt-2 text-xs text-indigo-600 font-medium flex items-center">
-                                            <RiLoader4Fill className="animate-spin mr-1" /> ACTIVE STATUS
-                                          </div>
-                                        )}
-                                      </motion.div>
-                                    );
-                                  })
-                                ) : (
-                                  <div className="text-center py-6 text-gray-500 bg-gray-50 rounded-lg">
-                                    <p>No tracking events available yet.</p>
+                                {parcel.deliveryStatus.find(s => s.status === status.value)?.location && (
+                                  <div className="flex items-center text-sm text-gray-500 mt-2">
+                                    <FaMapMarkerAlt className="mr-2 text-gray-400" /> {parcel.deliveryStatus.find(s => s.status === status.value)?.location}
                                   </div>
                                 )}
-                              </div>
-                            </div>
+                              </>
+                            ) : (
+                              <p className="text-gray-400 mt-2">
+                                {isCurrent ? 'This step is currently in progress' : `This step will occur next`}
+                              </p>
+                            )}
+                          </motion.div>
+                        </motion.div>
 
-                            <p className="text-xs text-gray-400 mt-6 text-center">
-                              Tracking information provided by ShipLogic API
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                        {/* Courier Tracking Section - Show right after Awaiting Courier status */}
+                        {isAwaitingCourier && shouldShowCourierTrackingSection(parcel) && (
+                          <CourierTrackingSection 
+                            shipment={shipment} 
+                            parcel={parcel} 
+                            formatDate={formatDate} 
+                            formatCourierTrackingEvents={formatCourierTrackingEvents} 
+                            recipientName={recipientName}
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {/* Direct Courier Guy Tracking Section */}
+          {parcel.isCourierGuyDirect && shipment && (
+            <div className="p-8">
+              <CourierTrackingSection 
+                shipment={shipment} 
+                parcel={parcel} 
+                formatDate={formatDate} 
+                formatCourierTrackingEvents={formatCourierTrackingEvents} 
+                recipientName={recipientName}
+                isDirectTracking
+              />
+            </div>
+          )}
         </motion.div>
       )}
 

@@ -360,7 +360,6 @@ const AssignRider = () => {
                                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Parcel Info</th>
                                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Payment</th>
                                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rider</th>
                                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Courier Guy Code</th>
                                     <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
                                 </tr>
@@ -393,16 +392,6 @@ const AssignRider = () => {
                                             </div>
                                         </td>
                                         <td className="px-4 py-4">
-                                            {parcel.assigned_rider_name ? (
-                                                <div className="text-sm">
-                                                    <div className="font-medium text-gray-900">{parcel.assigned_rider_name}</div>
-                                                    <div className="text-gray-500 text-xs">{parcel.assigned_rider_phone}</div>
-                                                </div>
-                                            ) : (
-                                                <span className="text-sm text-gray-400">Not assigned</span>
-                                            )}
-                                        </td>
-                                        <td className="px-4 py-4">
                                             {parcel.CourierGuyCode ? (
                                                 <div className="font-mono text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded">
                                                     {parcel.CourierGuyCode}
@@ -420,19 +409,17 @@ const AssignRider = () => {
                                                 >
                                                     <FaTrash />
                                                 </button>
-                                                {!parcel.assigned_rider_id && (
-                                                    <button
-                                                        onClick={() => {
-                                                            setSelectedParcel(parcel);
-                                                            setIsAssignModalOpen(true);
-                                                        }}
-                                                        className="btn btn-xs btn-primary"
-                                                        disabled={isUpdating}
-                                                    >
-                                                        <FaMotorcycle />
-                                                        Assign
-                                                    </button>
-                                                )}
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedParcel(parcel);
+                                                        setIsAssignModalOpen(true);
+                                                    }}
+                                                    className="btn btn-xs btn-primary"
+                                                    disabled={isUpdating || parcel.assigned_rider_id}
+                                                >
+                                                    <FaMotorcycle />
+                                                    {parcel.assigned_rider_id ? "Assigned" : "Assign"}
+                                                </button>
                                                 <button
                                                     onClick={() => openStatusModal(parcel)}
                                                     className="btn btn-xs btn-outline"
@@ -463,26 +450,41 @@ const AssignRider = () => {
                                 <p className="text-sm">{selectedParcel?.senderRegion} → {selectedParcel?.receiverRegion}</p>
                             </div>
                         </div>
-                        <select
-                            className="select select-bordered w-full mb-6"
-                            value={selectedRider?._id || ""}
-                            onChange={(e) => setSelectedRider(ridersData.find((r) => r._id === e.target.value) || null)}
-                        >
-                            <option value="">Select a rider</option>
-                            {ridersData.map((rider) => (
-                                <option key={rider._id} value={rider._id}>
-                                    {rider.name} - {rider.phone} ({rider.district})
-                                </option>
-                            ))}
-                        </select>
+                        
+                        <div className="overflow-y-auto max-h-[300px] mb-4">
+                            <table className="table w-full">
+                                <thead>
+                                    <tr>
+                                        <th>Rider</th>
+                                        <th>Phone</th>
+                                        <th>District</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {ridersData.map((rider) => (
+                                        <tr key={rider._id} className="hover:bg-gray-50">
+                                            <td>
+                                                <div className="font-medium">{rider.name}</div>
+                                            </td>
+                                            <td>{rider.phone}</td>
+                                            <td>{rider.district}</td>
+                                            <td>
+                                                <button
+                                                    className="btn btn-xs btn-primary"
+                                                    onClick={() => assignRider(selectedParcel._id, rider)}
+                                                    disabled={isUpdating}
+                                                >
+                                                    Assign
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        
                         <div className="modal-action">
-                            <button
-                                className="btn btn-primary"
-                                onClick={() => assignRider(selectedParcel._id, selectedRider)}
-                                disabled={!selectedRider || isUpdating}
-                            >
-                                {isUpdating ? <span className="loading loading-spinner"></span> : "Assign Rider"}
-                            </button>
                             <button className="btn" onClick={() => setIsAssignModalOpen(false)}>
                                 Cancel
                             </button>

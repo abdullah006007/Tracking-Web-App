@@ -15,7 +15,7 @@ const Footer = () => {
                     <p className="font-bold">
                         20 percent
                         <br />
-                        Providing reliable Shipping
+                        Providing reliable Shipping Service
                     </p>
                     <p>Copyright © {new Date().getFullYear()} - All right reserved</p>
                 </aside>
